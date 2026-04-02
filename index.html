@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HackHouse — Tecnología sin límites</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ─── Variables ─── */
+    :root {
+      --index-oscuro:   #1a1a1a;
+      --index-claro:    #f2f2f2;
+      --index-fuente-mono: 'Share Tech Mono', monospace;
+      --index-fuente-titulo: 'Orbitron', monospace;
+      --index-fuente-cuerpo: 'Exo 2', sans-serif;
+    }
+
+    /* ─── Reset ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--index-oscuro);
+      color: var(--index-claro);
+      font-family: var(--index-fuente-cuerpo);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ─── Cursor personalizado ─── */
+    .index-cursor {
+      position: fixed;
+      width: 20px; height: 20px;
+      border: 1px solid var(--index-claro);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease, width 0.2s, height 0.2s, background 0.2s;
+      mix-blend-mode: difference;
+    }
+    .index-cursor-punto {
+      position: fixed;
+      width: 4px; height: 4px;
+      background: var(--index-claro);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      mix-blend-mode: difference;
+    }
+    .index-cursor.activo { width: 40px; height: 40px; background: rgba(242,242,242,0.1); }
+
+    /* ─── Canvas fondo ─── */
+    .index-canvas-fondo {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      opacity: 0.07;
+    }
+
+    /* ─── Ruido / textura ─── */
+    .index-ruido {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px;
+    }
+
+    /* ─── Línea de escaneo ─── */
+    .index-scanline {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(242,242,242,0.015) 2px,
+        rgba(242,242,242,0.015) 4px
+      );
+    }
+
+    /* ─── Navegación ─── */
+    .index-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 48px;
+      border-bottom: 1px solid rgba(242,242,242,0.06);
+      backdrop-filter: blur(12px);
+      background: rgba(26,26,26,0.7);
+    }
+
+    .index-logo {
+      font-family: var(--index-fuente-titulo);
+      font-weight: 900;
+      font-size: 1.1rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      position: relative;
+    }
+    .index-logo::before {
+      content: '//';
+      margin-right: 6px;
+      opacity: 0.4;
+      font-size: 0.8em;
+    }
+    .index-logo-corchete {
+      color: var(--index-claro);
+      opacity: 0.3;
+    }
+
+    .index-nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+    .index-nav-links a {
+      font-family: var(--index-fuente-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-decoration: none;
+      color: rgba(242,242,242,0.5);
+      text-transform: uppercase;
+      transition: color 0.3s;
+      position: relative;
+    }
+    .index-nav-links a::before { content: '_'; margin-right: 2px; opacity: 0; transition: opacity 0.3s; }
+    .index-nav-links a:hover { color: var(--index-claro); }
+    .index-nav-links a:hover::before { opacity: 1; }
+
+    .index-nav-cta {
+      font-family: var(--index-fuente-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: 1px solid rgba(242,242,242,0.3);
+      padding: 10px 22px;
+      color: var(--index-claro);
+      text-decoration: none;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .index-nav-cta:hover { background: var(--index-claro); color: var(--index-oscuro); border-color: var(--index-claro); }
+
+    /* ─── Hero ─── */
+    .index-hero {
+      position: relative;
+      z-index: 10;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 140px 48px 80px;
+      overflow: hidden;
+    }
+
+    .index-hero-etiqueta {
+      font-family: var(--index-fuente-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: rgba(242,242,242,0.35);
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .index-hero-etiqueta::before {
+      content: '';
+      display: inline-block;
+      width: 40px; height: 1px;
+      background: rgba(242,242,242,0.3);
+    }
+
+    .index-hero-titulo {
+      font-family: var(--index-fuente-titulo);
+      font-weight: 900;
+      font-size: clamp(3rem, 9vw, 8rem);
+      line-height: 0.9;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      position: relative;
+    }
+
+    .index-hero-titulo-glitch {
+      position: relative;
+      display: inline-block;
+    }
+    .index-hero-titulo-glitch::before,
+    .index-hero-titulo-glitch::after {
+      content: attr(data-texto);
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+    }
+    .index-hero-titulo-glitch::before {
+      animation: index-glitch-antes 4s infinite;
+      clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+      transform: translateX(-3px);
+      opacity: 0.7;
+    }
+    .index-hero-titulo-glitch::after {
+      animation: index-glitch-despues 4s infinite;
+      clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+      transform: translateX(3px);
+      opacity: 0.7;
+    }
+
+    @keyframes index-glitch-antes {
+      0%, 90%, 100% { transform: translateX(0); opacity: 0; }
+      92% { transform: translateX(-4px) skewX(-5deg); opacity: 0.6; }
+      94% { transform: translateX(4px); opacity: 0.4; }
+      96% { transform: translateX(0); opacity: 0; }
+    }
+    @keyframes index-glitch-despues {
+      0%, 90%, 100% { transform: translateX(0); opacity: 0; }
+      93% { transform: translateX(4px) skewX(5deg); opacity: 0.5; }
+      95% { transform: translateX(-4px); opacity: 0.3; }
+      97% { transform: translateX(0); opacity: 0; }
+    }
+
+    .index-hero-subtitulo {
+      font-family: var(--index-fuente-mono);
+      font-size: clamp(0.75rem, 2vw, 1rem);
+      color: rgba(242,242,242,0.4);
+      margin-top: 32px;
+      max-width: 500px;
+      line-height: 1.7;
+    }
+
+    .index-hero-terminal {
+      margin-top: 56px;
+      font-family: var(--index-fuente-mono);
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(242,242,242,0.6);
+    }
+    .index-hero-terminal-prompt { opacity: 0.3; }
+    .index-hero-terminal-texto { border-right: 2px solid var(--index-claro); padding-right: 4px; animation: index-parpadeo 1s step-end infinite; }
+    @keyframes index-parpadeo { 0%, 100% { border-color: var(--index-claro); } 50% { border-color: transparent; } }
+
+    .index-hero-metricas {
+      position: absolute;
+      right: 48px;
+      bottom: 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      text-align: right;
+    }
+    .index-metrica-numero {
+      font-family: var(--index-fuente-titulo);
+      font-size: 2.4rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .index-metrica-etiqueta {
+      font-family: var(--index-fuente-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(242,242,242,0.3);
+      margin-top: 4px;
+    }
+
+    .index-hero-linea-vertical {
+      position: absolute;
+      right: 280px;
+      top: 140px;
+      bottom: 60px;
+      width: 1px;
+      background: linear-gradient(to bottom, transparent, rgba(242,242,242,0.15), transparent);
+    }
+
+    /* ─── Sección genérica ─── */
+    .index-seccion {
+      position: relative;
+      z-index: 10;
+      padding: 120px 48px;
+    }
+
+    .index-seccion-cabecera {
+      display: flex;
+      align-items: flex-start;
+      gap: 24px;
+      margin-bottom: 80px;
+    }
+    .index-seccion-numero {
+      font-family: var(--index-fuente-mono);
+      font-size: 0.7rem;
+      color: rgba(242,242,242,0.2);
+      margin-top: 10px;
+      letter-spacing: 0.1em;
+    }
+    .index-seccion-titulo {
+      font-family: var(--index-fuente-titulo);
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .index-seccion-titulo span {
+      display: block;
+      font-size: 0.45em;
+      font-weight: 400;
+      font-family: var(--index-fuente-mono);
+      color: rgba(242,242,242,0.3);
+      letter-spacing: 0.2em;
+      margin-bottom: 8px;
+    }
+
+    /* ─── Servicios ─── */
+    .index-servicios-grilla {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: rgba(242,242,242,0.08);
+      border: 1px solid rgba(242,242,242,0.08);
+    }
+
+    .index-servicio-tarjeta {
+      background: var(--index-oscuro);
+      padding: 52px 44px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.4s;
+      cursor: none;
+    }
+    .index-servicio-tarjeta::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--index-claro);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.5s cubic-bezier(0.76,0,0.24,1);
+      z-index: 0;
+    }
+    .index-servicio-tarjeta:hover::before { transform: scaleY(1); }
+    .index-servicio-tarjeta:hover { color: var(--index-oscuro); }
+    .index-servicio-tarjeta > * { position: relative; z-index: 1; }
+
+    .index-servicio-icono {
+      font-family: var(--index-fuente-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      margin-bottom: 28px;
+      opacity: 0.35;
+      transition: opacity 0.3s;
+    }
+    .index-servicio-tarjeta:hover .index-servicio-icono { opacity: 0.5; }
+
+    .index-servicio-nombre {
+      font-family: var(--index-fuente-titulo);
+      font-size: clamp(1rem, 2vw, 1.35rem);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 16px;
+      line-height: 1.2;
+    }
+
+    .index-servicio-descripcion {
+      font-family: var(--index-fuente-cuerpo);
+      font-size: 0.9rem;
+      line-height: 1.7;
+      opacity: 0.5;
+      font-weight: 300;
+      transition: opacity 0.3s;
+    }
+    .index-servicio-tarjeta:hover .index-servicio-descripcion { opacity: 0.7; }
+
+    .index-servicio-flecha {
+      position: absolute;
+      bottom: 44px;
+      right: 44px;
+      font-size: 1.4rem;
+      opacity: 0.2;
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    .index-servicio-tarjeta:hover .index-servicio-flecha { opacity: 0.6; transform: translate(4px, -4px); }
+
+    /* ─── Divisor ─── */
+    .index-divisor {
+      position: relative;
+      z-index: 10;
+      padding: 0 48px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .index-divisor::before, .index-divisor::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(242,242,242,0.08);
+    }
+    .index-divisor-texto {
+      font-family: var(--index-fuente-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(242,242,242,0.2);
+      white-space: nowrap;
+    }
+
+    /* ─── Clientes ─── */
+    .index-clientes-grilla {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: rgba(242,242,242,0.08);
+      border: 1px solid rgba(242,242,242,0.08);
+    }
+
+    .index-cliente-celda {
+      background: var(--index-oscuro);
+      padding: 48px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.35s;
+      cursor: none;
+    }
+    .index-cliente-celda:hover { background: rgba(242,242,242,0.04); }
+
+    .index-cliente-logo {
+      width: 80px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .index-cliente-logo svg {
+      width: 100%;
+      height: 100%;
+      fill: var(--index-claro);
+      opacity: 0.55;
+      transition: opacity 0.3s;
+    }
+    .index-cliente-celda:hover .index-cliente-logo svg { opacity: 1; }
+
+    .index-cliente-nombre {
+      font-family: var(--index-fuente-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(242,242,242,0.25);
+      text-align: center;
+      transition: color 0.3s;
+    }
+    .index-cliente-celda:hover .index-cliente-nombre { color: rgba(242,242,242,0.5); }
+
+    /* ─── CTA final ─── */
+    .index-cta-seccion {
+      position: relative;
+      z-index: 10;
+      padding: 140px 48px;
+      text-align: center;
+      overflow: hidden;
+    }
+    .index-cta-fondo {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(242,242,242,0.04) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .index-cta-titulo {
+      font-family: var(--index-fuente-titulo);
+      font-size: clamp(2rem, 6vw, 5.5rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      line-height: 0.95;
+      margin-bottom: 40px;
+    }
+    .index-cta-subtitulo {
+      font-family: var(--index-fuente-mono);
+      font-size: 0.85rem;
+      color: rgba(242,242,242,0.35);
+      margin-bottom: 60px;
+      letter-spacing: 0.1em;
+    }
+    .index-cta-boton {
+      display: inline-block;
+      font-family: var(--index-fuente-mono);
+      font-size: 0.8rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 1px solid var(--index-claro);
+      padding: 18px 52px;
+      color: var(--index-claro);
+      position: relative;
+      overflow: hidden;
+      transition: color 0.4s;
+    }
+    .index-cta-boton::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--index-claro);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s cubic-bezier(0.76,0,0.24,1);
+      z-index: -1;
+    }
+    .index-cta-boton:hover { color: var(--index-oscuro); }
+    .index-cta-boton:hover::before { transform: scaleX(1); }
+
+    /* ─── Footer ─── */
+    .index-footer {
+      position: relative;
+      z-index: 10;
+      border-top: 1px solid rgba(242,242,242,0.06);
+      padding: 36px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--index-fuente-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: rgba(242,242,242,0.2);
+    }
+
+    /* ─── Esquina decorativa ─── */
+    .index-deco-esquina {
+      position: fixed;
+      z-index: 5;
+      pointer-events: none;
+    }
+    .index-deco-esquina--tl { top: 80px; left: 20px; }
+    .index-deco-esquina--tr { top: 80px; right: 20px; }
+    .index-deco-esquina--bl { bottom: 20px; left: 20px; }
+    .index-deco-esquina--br { bottom: 20px; right: 20px; }
+
+    .index-deco-esquina svg {
+      width: 20px; height: 20px;
+      stroke: rgba(242,242,242,0.12);
+      fill: none;
+      stroke-width: 1;
+    }
+
+    /* ─── Barra lateral de estado ─── */
+    .index-barra-estado {
+      position: fixed;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .index-barra-estado-linea {
+      width: 1px;
+      height: 48px;
+      background: rgba(242,242,242,0.1);
+    }
+    .index-barra-estado-texto {
+      font-family: var(--index-fuente-mono);
+      font-size: 0.55rem;
+      letter-spacing: 0.25em;
+      color: rgba(242,242,242,0.15);
+      writing-mode: vertical-rl;
+      text-transform: uppercase;
+    }
+
+    /* ─── Animación de entrada ─── */
+    .index-revelar {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .index-revelar.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ─── Responsive ─── */
+    @media (max-width: 900px) {
+      .index-nav { padding: 20px 24px; }
+      .index-nav-links { display: none; }
+      .index-hero { padding: 120px 24px 80px; }
+      .index-hero-metricas { display: none; }
+      .index-hero-linea-vertical { display: none; }
+      .index-seccion { padding: 80px 24px; }
+      .index-servicios-grilla { grid-template-columns: 1fr; }
+      .index-clientes-grilla { grid-template-columns: repeat(2, 1fr); }
+      .index-divisor { padding: 0 24px; }
+      .index-cta-seccion { padding: 100px 24px; }
+      .index-footer { padding: 28px 24px; flex-direction: column; gap: 12px; text-align: center; }
+      .index-barra-estado { display: none; }
+      .index-deco-esquina { display: none; }
+    }
+
+    @media (max-width: 560px) {
+      .index-clientes-grilla { grid-template-columns: 1fr; }
+      .index-servicio-tarjeta { padding: 36px 28px; }
+      .index-nav-cta { display: none; }
+    }
+
+    /* ─── Barra de progreso horizontal ─── */
+    .index-progreso {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      background: var(--index-claro);
+      z-index: 1000;
+      transition: width 0.1s linear;
+      opacity: 0.6;
+    }
+
+    /* ─── Menú hamburguesa mobile ─── */
+    .index-hamburguesa {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: none;
+      padding: 4px;
+    }
+    .index-hamburguesa span {
+      display: block;
+      width: 24px; height: 1px;
+      background: var(--index-claro);
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    @media (max-width: 900px) {
+      .index-hamburguesa { display: flex; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cursor -->
+  <div class="index-cursor" id="index-cursor"></div>
+  <div class="index-cursor-punto" id="index-cursor-punto"></div>
+
+  <!-- Barra de progreso -->
+  <div class="index-progreso" id="index-progreso"></div>
+
+  <!-- Canvas lluvia de código -->
+  <canvas class="index-canvas-fondo" id="index-canvas-fondo"></canvas>
+
+  <!-- Textura -->
+  <div class="index-ruido"></div>
+  <div class="index-scanline"></div>
+
+  <!-- Esquinas decorativas -->
+  <div class="index-deco-esquina index-deco-esquina--tl">
+    <svg viewBox="0 0 20 20"><polyline points="20,0 0,0 0,20"/></svg>
+  </div>
+  <div class="index-deco-esquina index-deco-esquina--tr">
+    <svg viewBox="0 0 20 20"><polyline points="0,0 20,0 20,20"/></svg>
+  </div>
+  <div class="index-deco-esquina index-deco-esquina--bl">
+    <svg viewBox="0 0 20 20"><polyline points="20,20 0,20 0,0"/></svg>
+  </div>
+  <div class="index-deco-esquina index-deco-esquina--br">
+    <svg viewBox="0 0 20 20"><polyline points="0,20 20,20 20,0"/></svg>
+  </div>
+
+  <!-- Barra lateral de estado -->
+  <div class="index-barra-estado">
+    <div class="index-barra-estado-linea"></div>
+    <div class="index-barra-estado-texto">Sistema activo</div>
+    <div class="index-barra-estado-linea"></div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="index-nav">
+    <div class="index-logo">
+      <span class="index-logo-corchete">[</span>HackHouse<span class="index-logo-corchete">]</span>
+    </div>
+    <ul class="index-nav-links">
+      <li><a href="#servicios">Servicios</a></li>
+      <li><a href="#clientes">Clientes</a></li>
+      <li><a href="#contacto">Contacto</a></li>
+    </ul>
+    <button class="index-hamburguesa" aria-label="Menú">
+      <span></span><span></span><span></span>
+    </button>
+    <a href="#contacto" class="index-nav-cta">Iniciar proyecto</a>
+  </nav>
+
+  <!-- Hero -->
+  <section class="index-hero" id="inicio">
+    <div class="index-hero-etiqueta">Tecnología sin límites · Est. 2024</div>
+
+    <h1 class="index-hero-titulo">
+      <div class="index-hero-titulo-glitch" data-texto="HACK">HACK</div>
+      <br>
+      <div class="index-hero-titulo-glitch" data-texto="HOUSE">HOUSE</div>
+    </h1>
+
+    <p class="index-hero-subtitulo index-revelar">
+      Construimos software, identidades y fortalezas digitales.<br>
+      Código limpio. Diseño brutal. Seguridad real.
+    </p>
+
+    <div class="index-hero-terminal index-revelar">
+      <span class="index-hero-terminal-prompt">root@hackhouse:~$</span>
+      <span class="index-hero-terminal-texto" id="index-terminal-texto"></span>
+    </div>
+
+    <div class="index-hero-linea-vertical"></div>
+
+    <div class="index-hero-metricas">
+      <div>
+        <div class="index-metrica-numero" data-objetivo="50">0</div>
+        <div class="index-metrica-etiqueta">Proyectos entregados</div>
+      </div>
+      <div>
+        <div class="index-metrica-numero" data-objetivo="30">0</div>
+        <div class="index-metrica-etiqueta">Clientes activos</div>
+      </div>
+      <div>
+        <div class="index-metrica-numero" data-objetivo="4">0</div>
+        <div class="index-metrica-etiqueta">Años de experiencia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Divisor -->
+  <div class="index-divisor">
+    <span class="index-divisor-texto">// servicios disponibles</span>
+  </div>
+
+  <!-- Servicios -->
+  <section class="index-seccion" id="servicios">
+    <div class="index-seccion-cabecera index-revelar">
+      <div class="index-seccion-numero">01</div>
+      <div>
+        <h2 class="index-seccion-titulo">
+          <span>// Lo que construimos</span>
+          Nuestros<br>Servicios
+        </h2>
+      </div>
+    </div>
+
+    <div class="index-servicios-grilla">
+
+      <div class="index-servicio-tarjeta index-revelar">
+        <div class="index-servicio-icono">[ SRV_01 ] ── DESARROLLO</div>
+        <h3 class="index-servicio-nombre">Desarrollo de software empresarial</h3>
+        <p class="index-servicio-descripcion">
+          Soluciones a medida para empresas pequeñas, medianas y grandes. Arquitectura sólida, código limpio y sistemas que escalan con tu negocio.
+        </p>
+        <div class="index-servicio-flecha">↗</div>
+      </div>
+
+      <div class="index-servicio-tarjeta index-revelar">
+        <div class="index-servicio-icono">[ SRV_02 ] ── WEB & MOBILE</div>
+        <h3 class="index-servicio-nombre">Diseño y desarrollo web & mobile</h3>
+        <p class="index-servicio-descripcion">
+          Interfaces que impactan. Aplicaciones web y móviles construidas 100% en código, sin plantillas, sin atajos. Pixel perfect.
+        </p>
+        <div class="index-servicio-flecha">↗</div>
+      </div>
+
+      <div class="index-servicio-tarjeta index-revelar">
+        <div class="index-servicio-icono">[ SRV_03 ] ── IDENTIDAD</div>
+        <h3 class="index-servicio-nombre">Diseño gráfico e identidad de marca</h3>
+        <p class="index-servicio-descripcion">
+          Tu marca es tu primera impresión. Creamos identidades visuales con carácter: logotipos, sistemas de diseño y activos gráficos que perduran.
+        </p>
+        <div class="index-servicio-flecha">↗</div>
+      </div>
+
+      <div class="index-servicio-tarjeta index-revelar">
+        <div class="index-servicio-icono">[ SRV_04 ] ── SEGURIDAD</div>
+        <h3 class="index-servicio-nombre">Ciberseguridad</h3>
+        <p class="index-servicio-descripcion">
+          Auditorías, pentesting y hardening de sistemas. Porque el mejor momento para proteger tu infraestructura es antes de que alguien más lo intente.
+        </p>
+        <div class="index-servicio-flecha">↗</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Divisor -->
+  <div class="index-divisor">
+    <span class="index-divisor-texto">// empresas que confían en nosotros</span>
+  </div>
+
+  <!-- Clientes -->
+  <section class="index-seccion" id="clientes">
+    <div class="index-seccion-cabecera index-revelar">
+      <div class="index-seccion-numero">02</div>
+      <div>
+        <h2 class="index-seccion-titulo">
+          <span>// Quienes nos eligen</span>
+          Con quienes<br>trabajamos
+        </h2>
+      </div>
+    </div>
+
+    <div class="index-clientes-grilla">
+
+      <!-- Cliente 1: TechCorp -->
+      <div class="index-cliente-celda index-revelar">
+        <div class="index-cliente-logo">
+          <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+            <rect x="8" y="8" width="64" height="64" rx="6" fill="none" stroke="currentColor" stroke-width="2" style="fill:var(--index-claro);stroke:none;opacity:1"/>
+            <text x="40" y="30" text-anchor="middle" font-family="'Share Tech Mono',monospace" font-size="11" fill="var(--index-oscuro)" font-weight="bold">TECH</text>
+            <text x="40" y="48" text-anchor="middle" font-family="'Share Tech Mono',monospace" font-size="11" fill="var(--index-oscuro)" font-weight="bold">CORP</text>
+            <line x1="16" y1="55" x2="64" y2="55" stroke="var(--index-oscuro)" stroke-width="1" opacity="0.4"/>
+            <circle cx="24" cy="62" r="2" fill="var(--index-oscuro)" opacity="0.5"/>
+            <circle cx="40" cy="62" r="2" fill="var(--index-oscuro)" opacity="0.5"/>
+            <circle cx="56" cy="62" r="2" fill="var(--index-oscuro)" opacity="0.5"/>
+          </svg>
+        </div>
+        <div class="index-cliente-nombre">TechCorp</div>
+      </div>
+
+      <!-- Cliente 2: NovaSystems -->
+      <div class="index-cliente-celda index-revelar">
+        <div class="index-cliente-logo">
+          <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="40,5 75,22 75,58 40,75 5,58 5,22" fill="var(--index-claro)" opacity="1"/>
+            <text x="40" y="38" text-anchor="middle" font-family="'Orbitron',monospace" font-size="10" fill="var(--index-oscuro)" font-weight="900">NS</text>
+            <text x="40" y="52" text-anchor="middle" font-family="'Share Tech Mono',monospace" font-size="7" fill="var(--index-oscuro)" opacity="0.6">NOVA</text>
+          </svg>
+        </div>
+        <div class="index-cliente-nombre">NovaSystems</div>
+      </div>
+
+      <!-- Cliente 3: DataStream -->
+      <div class="index-cliente-celda index-revelar">
+        <div class="index-cliente-logo">
+          <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="4" width="72" height="72" fill="none" stroke="var(--index-claro)" stroke-width="2" opacity="0.8"/>
+            <rect x="12" y="12" width="56" height="56" fill="none" stroke="var(--index-claro)" stroke-width="1" opacity="0.3"/>
+            <text x="40" y="36" text-anchor="middle" font-family="'Orbitron',monospace" font-size="9" fill="var(--index-claro)" font-weight="700">DATA</text>
+            <text x="40" y="50" text-anchor="middle" font-family="'Orbitron',monospace" font-size="9" fill="var(--index-claro)" font-weight="700">STREAM</text>
+          </svg>
+        </div>
+        <div class="index-cliente-nombre">DataStream</div>
+      </div>
+
+      <!-- Cliente 4: Apex Labs -->
+      <div class="index-cliente-celda index-revelar">
+        <div class="index-cliente-logo">
+          <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="40" cy="40" r="34" fill="var(--index-claro)" opacity="1"/>
+            <text x="40" y="36" text-anchor="middle" font-family="'Orbitron',monospace" font-size="14" fill="var(--index-oscuro)" font-weight="900">A</text>
+            <text x="40" y="52" text-anchor="middle" font-family="'Share Tech Mono',monospace" font-size="7" fill="var(--index-oscuro)" opacity="0.6">APEX LABS</text>
+          </svg>
+        </div>
+        <div class="index-cliente-nombre">Apex Labs</div>
+      </div>
+
+      <!-- Cliente 5: Meridian -->
+      <div class="index-cliente-celda index-revelar">
+        <div class="index-cliente-logo">
+          <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="40,6 74,60 6,60" fill="none" stroke="var(--index-claro)" stroke-width="2" opacity="0.9"/>
+            <polygon points="40,20 62,56 18,56" fill="var(--index-claro)" opacity="0.15"/>
+            <text x="40" y="48" text-anchor="middle" font-family="'Share Tech Mono',monospace" font-size="7" fill="var(--index-claro)" letter-spacing="2">MERIDIAN</text>
+          </svg>
+        </div>
+        <div class="index-cliente-nombre">Meridian</div>
+      </div>
+
+      <!-- Cliente 6: CipherNet -->
+      <div class="index-cliente-celda index-revelar">
+        <div class="index-cliente-logo">
+          <svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+            <!-- Shield icon -->
+            <path d="M40 8 L68 20 L68 44 C68 58 55 70 40 75 C25 70 12 58 12 44 L12 20 Z" fill="var(--index-claro)" opacity="1"/>
+            <path d="M40 18 L58 26 L58 44 C58 54 50 63 40 67 C30 63 22 54 22 44 L22 26 Z" fill="var(--index-oscuro)" opacity="0.85"/>
+            <text x="40" y="44" text-anchor="middle" font-family="'Orbitron',monospace" font-size="9" fill="var(--index-claro)" font-weight="700">CIPHER</text>
+            <text x="40" y="56" text-anchor="middle" font-family="'Orbitron',monospace" font-size="9" fill="var(--index-claro)" font-weight="700">NET</text>
+          </svg>
+        </div>
+        <div class="index-cliente-nombre">CipherNet</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="index-cta-seccion" id="contacto">
+    <div class="index-cta-fondo"></div>
+    <p class="index-cta-subtitulo index-revelar">// ¿Listo para el siguiente nivel?</p>
+    <h2 class="index-cta-titulo index-revelar">
+      Empecemos<br>a construir
+    </h2>
+    <a href="mailto:hola@hackhouse.dev" class="index-cta-boton index-revelar">
+      Contactar ahora
+    </a>
+  </section>
+
+  <!-- Footer -->
+  <footer class="index-footer">
+    <span>© 2026 HackHouse — Todos los derechos reservados</span>
+    <span>Sistema v1.0.0 // Online</span>
+    <span>hola@hackhouse.dev</span>
+  </footer>
+
+  <script>
+    /* ─── Cursor ─── */
+    const cursor = document.getElementById('index-cursor');
+    const cursorPunto = document.getElementById('index-cursor-punto');
+    let mx = 0, my = 0, cx = 0, cy = 0;
+
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursorPunto.style.left = mx + 'px';
+      cursorPunto.style.top  = my + 'px';
+    });
+
+    function animarCursor() {
+      cx += (mx - cx) * 0.12;
+      cy += (my - cy) * 0.12;
+      cursor.style.left = cx + 'px';
+      cursor.style.top  = cy + 'px';
+      requestAnimationFrame(animarCursor);
+    }
+    animarCursor();
+
+    document.querySelectorAll('a, button, .index-servicio-tarjeta, .index-cliente-celda').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('activo'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('activo'));
+    });
+
+    /* ─── Progreso de scroll ─── */
+    const barraProgreso = document.getElementById('index-progreso');
+    window.addEventListener('scroll', () => {
+      const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+      barraProgreso.style.width = pct + '%';
+    });
+
+    /* ─── Canvas lluvia de código ─── */
+    (function() {
+      const canvas = document.getElementById('index-canvas-fondo');
+      const ctx = canvas.getContext('2d');
+
+      function redimensionar() {
+        canvas.width  = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      redimensionar();
+      window.addEventListener('resize', redimensionar);
+
+      const CHARS = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホ{}[]<>/\\|@#$%^&*';
+      const TAMANO = 14;
+      let cols, gotas;
+
+      function iniciarGotas() {
+        cols  = Math.floor(canvas.width / TAMANO);
+        gotas = Array.from({ length: cols }, () => Math.random() * -canvas.height / TAMANO);
+      }
+      iniciarGotas();
+      window.addEventListener('resize', iniciarGotas);
+
+      function dibujar() {
+        ctx.fillStyle = 'rgba(26,26,26,0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = '#f2f2f2';
+        ctx.font = TAMANO + 'px "Share Tech Mono", monospace';
+
+        for (let i = 0; i < cols; i++) {
+          const ch = CHARS[Math.floor(Math.random() * CHARS.length)];
+          const x  = i * TAMANO;
+          const y  = gotas[i] * TAMANO;
+
+          ctx.globalAlpha = Math.random() * 0.5 + 0.1;
+          ctx.fillText(ch, x, y);
+          ctx.globalAlpha = 1;
+
+          if (y > canvas.height && Math.random() > 0.975) {
+            gotas[i] = 0;
+          }
+          gotas[i] += 0.5;
+        }
+      }
+      setInterval(dibujar, 55);
+    })();
+
+    /* ─── Terminal typing ─── */
+    const frases = [
+      'iniciando sistema seguro...',
+      'auditando vulnerabilidades...',
+      'compilando soluciones...',
+      'desplegando en producción...',
+      'construyendo tu próximo proyecto_',
+    ];
+    let iFrase = 0, iChar = 0, borrando = false;
+    const elTerminal = document.getElementById('index-terminal-texto');
+
+    function escribir() {
+      const actual = frases[iFrase];
+      if (!borrando) {
+        elTerminal.textContent = actual.slice(0, ++iChar);
+        if (iChar === actual.length) { borrando = true; setTimeout(escribir, 2200); return; }
+      } else {
+        elTerminal.textContent = actual.slice(0, --iChar);
+        if (iChar === 0) { borrando = false; iFrase = (iFrase + 1) % frases.length; }
+      }
+      setTimeout(escribir, borrando ? 40 : 70);
+    }
+    escribir();
+
+    /* ─── Contadores de métricas ─── */
+    document.querySelectorAll('[data-objetivo]').forEach(el => {
+      const objetivo = parseInt(el.dataset.objetivo);
+      let actual = 0;
+      const paso = Math.max(1, Math.floor(objetivo / 40));
+      const intervalo = setInterval(() => {
+        actual = Math.min(actual + paso, objetivo);
+        el.textContent = actual + '+';
+        if (actual >= objetivo) clearInterval(intervalo);
+      }, 40);
+    });
+
+    /* ─── Revelar al hacer scroll ─── */
+    const observador = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          observador.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.index-revelar').forEach(el => observador.observe(el));
+
+    /* ─── Glitch aleatorio en logo ─── */
+    const logo = document.querySelector('.index-logo');
+    setInterval(() => {
+      logo.style.transform = `skewX(${(Math.random() - 0.5) * 4}deg)`;
+      setTimeout(() => logo.style.transform = '', 80);
+    }, 5000);
+  </script>
+</body>
+</html>
