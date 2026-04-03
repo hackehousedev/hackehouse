@@ -4,237 +4,437 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HackHouse — Tecnología sin límites</title>
+  <title>HackHouse Academy — Inteligencia Artificial sin límites</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
     href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap"
     rel="stylesheet" />
-  <link rel="shortcut icon" href="public/img/hackhouse - icon gris.png">
-  <link rel="stylesheet" href="public/css/style.css" />
+  <link rel="shortcut icon" href="public/img/hack_house/hackhouse - icon gris.png">
+  <link rel="stylesheet" href="public/css/academy.css" />
 </head>
 
 <body>
 
   <!-- Cursor -->
-  <div class="index-cursor" id="index-cursor"></div>
-  <div class="index-cursor-punto" id="index-cursor-punto"></div>
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-punto" id="cursor-punto"></div>
 
   <!-- Barra de progreso -->
-  <div class="index-progreso" id="index-progreso"></div>
+  <div class="progreso" id="progreso"></div>
 
-  <!-- Canvas lluvia de código -->
-  <canvas class="index-canvas-fondo" id="index-canvas-fondo"></canvas>
+  <!-- Canvas -->
+  <canvas class="canvas-fondo" id="canvas-fondo"></canvas>
 
   <!-- Textura -->
-  <div class="index-ruido"></div>
-  <div class="index-scanline"></div>
+  <div class="ruido"></div>
+  <div class="scanline"></div>
 
   <!-- Esquinas decorativas -->
-  <div class="index-deco-esquina index-deco-esquina--tl">
-    <svg viewBox="0 0 20 20">
+  <div class="deco-esquina deco-esquina--tl"><svg viewBox="0 0 20 20">
       <polyline points="20,0 0,0 0,20" />
-    </svg>
-  </div>
-  <div class="index-deco-esquina index-deco-esquina--tr">
-    <svg viewBox="0 0 20 20">
+    </svg></div>
+  <div class="deco-esquina deco-esquina--tr"><svg viewBox="0 0 20 20">
       <polyline points="0,0 20,0 20,20" />
-    </svg>
-  </div>
-  <div class="index-deco-esquina index-deco-esquina--bl">
-    <svg viewBox="0 0 20 20">
+    </svg></div>
+  <div class="deco-esquina deco-esquina--bl"><svg viewBox="0 0 20 20">
       <polyline points="20,20 0,20 0,0" />
-    </svg>
-  </div>
-  <div class="index-deco-esquina index-deco-esquina--br">
-    <svg viewBox="0 0 20 20">
+    </svg></div>
+  <div class="deco-esquina deco-esquina--br"><svg viewBox="0 0 20 20">
       <polyline points="0,20 20,20 20,0" />
-    </svg>
+    </svg></div>
+
+  <!-- Barra lateral estado -->
+  <div class="barra-estado">
+    <div class="barra-estado-linea"></div>
+    <div class="barra-estado-texto">Academia online</div>
+    <div class="barra-estado-linea"></div>
   </div>
 
-  <!-- Barra lateral de estado -->
-  <div class="index-barra-estado">
-    <div class="index-barra-estado-linea"></div>
-    <div class="index-barra-estado-texto">Sistema activo</div>
-    <div class="index-barra-estado-linea"></div>
-  </div>
+  <!-- ═══════════════════════════════════════
+       MENÚ FULLSCREEN OVERLAY
+  ═══════════════════════════════════════ -->
+  <div class="menu-overlay" id="menu-overlay" aria-hidden="true">
+    <!-- Paneles de entrada (cortinas) -->
+    <div class="menu-panel menu-panel--izq"></div>
+    <div class="menu-panel menu-panel--der"></div>
 
-  <!-- Nav -->
-  <nav class="index-nav">
-    <div class="index-logo">
-      <span class="index-logo-corchete">[</span>HackHouse<span class="index-logo-corchete">]</span>
+    <!-- Contenido del menú -->
+    <div class="menu-contenido">
+
+      <!-- Líneas decorativas izquierda -->
+      <div class="menu-deco-izq">
+        <div class="menu-deco-linea"></div>
+        <span class="menu-deco-texto">// nav_system.exe</span>
+        <div class="menu-deco-linea"></div>
+      </div>
+
+      <!-- Links principales -->
+      <nav class="menu-nav" role="navigation" aria-label="Menú principal">
+        <a href="#modulos" class="menu-link" data-num="01">
+          <span class="menu-link-num">[ 01 ]</span>
+          <span class="menu-link-texto">Módulos</span>
+          <span class="menu-link-flecha">↗</span>
+        </a>
+        <a href="#ruta" class="menu-link" data-num="02">
+          <span class="menu-link-num">[ 02 ]</span>
+          <span class="menu-link-texto">Ruta</span>
+          <span class="menu-link-flecha">↗</span>
+        </a>
+        <a href="#docentes" class="menu-link" data-num="03">
+          <span class="menu-link-num">[ 03 ]</span>
+          <span class="menu-link-texto">Docentes</span>
+          <span class="menu-link-flecha">↗</span>
+        </a>
+        <a href="#inscripcion" class="menu-link" data-num="04">
+          <span class="menu-link-num">[ 04 ]</span>
+          <span class="menu-link-texto">Inscripción</span>
+          <span class="menu-link-flecha">↗</span>
+        </a>
+      </nav>
+
+      <!-- Info derecha -->
+      <div class="menu-info">
+        <div class="menu-info-bloque">
+          <div class="menu-info-label">// estado del sistema</div>
+          <div class="menu-info-valor">Online · v1.0.0</div>
+        </div>
+        <div class="menu-info-bloque">
+          <div class="menu-info-label">// contacto</div>
+          <div class="menu-info-valor">academia@hackhouse.dev</div>
+        </div>
+        <div class="menu-info-bloque">
+          <div class="menu-info-label">// inscripciones</div>
+          <div class="menu-info-valor">Abiertas 2026</div>
+        </div>
+        <a href="#inscripcion" class="menu-cta">
+          Reservar mi lugar →
+        </a>
+      </div>
+
     </div>
-    <ul class="index-nav-links">
-      <li><a href="#servicios">Servicios</a></li>
-      <li><a href="#clientes">Clientes</a></li>
-      <li><a href="#contacto">Contacto</a></li>
+
+    <!-- Barra inferior menú -->
+    <div class="menu-footer">
+      <span>© 2026 HackHouse Academy</span>
+      <span class="menu-footer-esc">[ ESC para cerrar ]</span>
+      <span>Tecnología sin límites</span>
+    </div>
+
+  </div>
+
+  <!-- Nav principal -->
+  <nav class="nav-principal" id="nav-principal">
+    <div class="logo">
+      <span class="corchete">[</span>HackHouse<span class="corchete">]</span>
+      <span class="academy-tag">ACADEMY</span>
+    </div>
+
+    <ul class="nav-links" id="nav-links-desktop">
+      <li><a href="#modulos">Módulos</a></li>
+      <li><a href="#ruta">Ruta</a></li>
+      <li><a href="#docentes">Docentes</a></li>
+      <li><a href="#inscripcion">Inscripción</a></li>
     </ul>
-    <button class="index-hamburguesa" aria-label="Menú">
-      <span></span><span></span><span></span>
-    </button>
-    <a href="#contacto" class="index-nav-cta">Iniciar proyecto</a>
+
+    <div class="nav-derecha">
+      <a href="#inscripcion" class="nav-cta">Inscribirse</a>
+
+      <!-- Botón hamburguesa -->
+      <button class="hamburguesa" id="hamburguesa" aria-label="Abrir menú" aria-expanded="false"
+        aria-controls="menu-overlay">
+        <div class="hamburguesa-interior">
+          <span class="ham-linea ham-linea--1"></span>
+          <span class="ham-linea ham-linea--2"></span>
+          <span class="ham-linea ham-linea--3"></span>
+        </div>
+        <span class="hamburguesa-label" id="ham-label">MENU</span>
+      </button>
+    </div>
   </nav>
 
   <!-- Hero -->
-  <section class="index-hero" id="inicio">
-    <div class="index-hero-etiqueta">Tecnología sin límites · Est. 2024</div>
+  <section class="hero" id="inicio">
+    <div class="hero-etiqueta">Formación en IA · Desde cero hasta deploy</div>
 
-    <h1 class="index-hero-titulo">
-      <div class="index-hero-titulo-glitch" data-texto="HACK">HACK</div>
-      <br>
-      <div class="index-hero-titulo-glitch" data-texto="HOUSE">HOUSE</div>
+    <h1 class="hero-titulo">
+      <div class="glitch" data-texto="HACK">HACK</div><br>
+      <div class="glitch" data-texto="HOUSE">HOUSE</div><br>
+      <div class="glitch" data-texto="ACADEMY">ACADEMY</div>
     </h1>
 
-    <p class="index-hero-subtitulo index-revelar">
-      Construimos software, identidades y fortalezas digitales.<br>
-      Código limpio. Diseño brutal. Seguridad real.
+    <div class="hero-badges revelar">
+      <span class="badge">// Inteligencia Artificial</span>
+      <span class="badge">// Machine Learning</span>
+      <span class="badge">// LLMs & Agentes</span>
+      <span class="badge">// IA aplicada</span>
+    </div>
+
+    <p class="hero-subtitulo revelar">
+      Aprendé a construir con IA de verdad.<br>
+      Sin relleno. Sin teoría vacía.<br>
+      Proyectos reales, instructores reales, resultados reales.
     </p>
 
-    <div class="index-hero-terminal index-revelar">
-      <span class="index-hero-terminal-prompt">root@hackhouse:~$</span>
-      <span class="index-hero-terminal-texto" id="index-terminal-texto"></span>
+    <div class="hero-terminal revelar">
+      <span class="terminal-prompt">root@academy:~$</span>
+      <span class="terminal-texto" id="terminal-texto"></span>
     </div>
 
-    <div class="index-hero-linea-vertical"></div>
+    <div class="hero-cta-grupo revelar">
+      <a href="#inscripcion" class="btn-primario">Quiero inscribirme</a>
+      <a href="#modulos" class="btn-secundario">Ver módulos</a>
+    </div>
 
-    <div class="index-hero-metricas">
+    <div class="hero-linea-vertical"></div>
+
+    <div class="hero-metricas">
       <div>
-        <div class="index-metrica-numero" data-objetivo="100">0</div>
-        <div class="index-metrica-etiqueta">% de proyectos entregados</div>
+        <div class="metrica-numero" data-objetivo="12">0</div>
+        <div class="metrica-etiqueta">Módulos de contenido</div>
       </div>
       <div>
-        <div class="index-metrica-numero" data-objetivo="5">0</div>
-        <div class="index-metrica-etiqueta">Clientes activos</div>
+        <div class="metrica-numero" data-objetivo="100">0</div>
+        <div class="metrica-etiqueta">% práctico</div>
       </div>
       <div>
-        <div class="index-metrica-numero" data-objetivo="3">0</div>
-        <div class="index-metrica-etiqueta">Años de experiencia</div>
+        <div class="metrica-numero" data-objetivo="0">0</div>
+        <div class="metrica-etiqueta">Límite de potencial</div>
       </div>
     </div>
   </section>
 
   <!-- Divisor -->
-  <div class="index-divisor">
-    <span class="index-divisor-texto">// servicios disponibles</span>
-  </div>
+  <div class="divisor"><span class="divisor-texto">// ¿por qué hackhouse academy?</span></div>
 
-  <!-- Servicios -->
-  <section class="index-seccion" id="servicios">
-    <div class="index-seccion-cabecera index-revelar">
-      <div class="index-seccion-numero">01</div>
-      <div>
-        <h2 class="index-seccion-titulo">
-          <span>// Lo que construimos</span>
-          Nuestros<br>Servicios
-        </h2>
+  <!-- Por qué -->
+  <section class="seccion" id="porque">
+    <div class="porque-grilla">
+      <div class="porque-celda revelar">
+        <div class="porque-numero">[ ∞ ]</div>
+        <div class="porque-label">Acceso de por vida</div>
+        <div class="porque-desc">Una vez que ingresás, el contenido es tuyo. Actualizaciones incluidas sin costo
+          adicional.</div>
       </div>
-    </div>
-
-    <div class="index-servicios-grilla">
-
-      <div class="index-servicio-tarjeta index-revelar">
-        <div class="index-servicio-icono">[ SRV_01 ] ── DESARROLLO</div>
-        <h3 class="index-servicio-nombre">Desarrollo de software empresarial</h3>
-        <p class="index-servicio-descripcion">
-          Soluciones a medida para empresas pequeñas, medianas y grandes. Arquitectura sólida, código limpio y sistemas
-          que escalan con tu negocio.
-        </p>
-        <div class="index-servicio-flecha">↗</div>
+      <div class="porque-celda revelar">
+        <div class="porque-numero">[ ↯ ]</div>
+        <div class="porque-label">Ritmo propio</div>
+        <div class="porque-desc">Sin horarios fijos. Avanzás cuando querés, al ritmo que tu agenda permite.</div>
       </div>
-
-      <div class="index-servicio-tarjeta index-revelar">
-        <div class="index-servicio-icono">[ SRV_02 ] ── WEB & MOBILE</div>
-        <h3 class="index-servicio-nombre">Diseño y desarrollo web & mobile</h3>
-        <p class="index-servicio-descripcion">
-          Interfaces que impactan. Aplicaciones web y móviles construidas 100% en código, sin plantillas, sin atajos.
-          Pixel perfect.
-        </p>
-        <div class="index-servicio-flecha">↗</div>
+      <div class="porque-celda revelar">
+        <div class="porque-numero">[ ⌬ ]</div>
+        <div class="porque-label">Proyectos reales</div>
+        <div class="porque-desc">Cada módulo termina con un proyecto deployable. Nada de ejercicios para el cajón.</div>
       </div>
-
-      <div class="index-servicio-tarjeta index-revelar">
-        <div class="index-servicio-icono">[ SRV_03 ] ── IDENTIDAD</div>
-        <h3 class="index-servicio-nombre">Diseño gráfico e identidad de marca</h3>
-        <p class="index-servicio-descripcion">
-          Tu marca es tu primera impresión. Creamos identidades visuales con carácter: logotipos, sistemas de diseño y
-          activos gráficos que perduran.
-        </p>
-        <div class="index-servicio-flecha">↗</div>
+      <div class="porque-celda revelar">
+        <div class="porque-numero">[ ◈ ]</div>
+        <div class="porque-label">Comunidad activa</div>
+        <div class="porque-desc">Acceso al servidor de Discord de la academia. Resolvé dudas, compartí proyectos,
+          conectate.</div>
       </div>
-
-      <div class="index-servicio-tarjeta index-revelar">
-        <div class="index-servicio-icono">[ SRV_04 ] ── SEGURIDAD</div>
-        <h3 class="index-servicio-nombre">Ciberseguridad</h3>
-        <p class="index-servicio-descripcion">
-          Auditorías, pentesting y hardening de sistemas. Porque el mejor momento para proteger tu infraestructura es
-          antes de que alguien más lo intente.
-        </p>
-        <div class="index-servicio-flecha">↗</div>
-      </div>
-
     </div>
   </section>
 
   <!-- Divisor -->
-  <div class="index-divisor">
-    <span class="index-divisor-texto">// empresas que confían en nosotros</span>
-  </div>
+  <div class="divisor"><span class="divisor-texto">// módulos del programa</span></div>
 
-  <!-- Clientes -->
-  <section class="index-seccion" id="clientes">
-    <div class="index-seccion-cabecera index-revelar">
-      <div class="index-seccion-numero">02</div>
+  <!-- Módulos -->
+  <section class="seccion" id="modulos">
+    <div class="seccion-cabecera revelar">
+      <div class="seccion-numero">01</div>
       <div>
-        <h2 class="index-seccion-titulo">
-          <span>// Quienes nos eligen</span>
-          Con quienes<br>trabajamos
+        <h2 class="seccion-titulo">
+          <span>// Lo que vas a dominar</span>
+          Módulos del<br>Programa
         </h2>
       </div>
     </div>
 
-    <div class="index-clientes-grilla">
-
-      <!-- Cliente 1: Libros del Pobre Mundo -->
-      <div class="index-cliente-celda index-revelar">
-        <div class="index-cliente-logo">
-          <img src="public/img/logo_libros_del_pobre_mundo.png" alt="Libros del Pobre Mundo"
-            style="width: 100%; height: 100%; object-fit: contain;" />
-        </div>
-        <div class="index-cliente-nombre">Libros del Pobre Mundo</div>
+    <div class="modulos-grilla">
+      <div class="modulo-tarjeta revelar">
+        <div class="modulo-icono">[ MOD_01 ] ── FUNDAMENTOS</div>
+        <h3 class="modulo-nombre">Fundamentos de IA & ML</h3>
+        <p class="modulo-desc">Cómo funcionan los modelos de verdad. Redes neuronales, entrenamiento, inferencia. Sin
+          magia, con lógica.</p>
+        <div class="modulo-flecha">↗</div>
       </div>
-
-      <!-- Cliente 2: Psyconnects -->
-      <div class="index-cliente-celda index-revelar">
-        <div class="index-cliente-logo">
-          <img src="public/img/logo_psyconnects.png" alt="Psyconnects"
-            style="width: 100%; height: 100%; object-fit: contain;" />
-        </div>
-        <div class="index-cliente-nombre">Psyconnects</div>
+      <div class="modulo-tarjeta revelar">
+        <div class="modulo-icono">[ MOD_02 ] ── PROMPT ENG</div>
+        <h3 class="modulo-nombre">Prompt Engineering avanzado</h3>
+        <p class="modulo-desc">Chain of thought, few-shot, RAG, structured outputs. Extraé el máximo potencial de
+          cualquier LLM.</p>
+        <div class="modulo-flecha">↗</div>
       </div>
-
+      <div class="modulo-tarjeta revelar">
+        <div class="modulo-icono">[ MOD_03 ] ── AGENTES</div>
+        <h3 class="modulo-nombre">Agentes & Automatización</h3>
+        <p class="modulo-desc">Construí agentes autónomos con herramientas reales: web scraping, ejecución de código,
+          APIs externas.</p>
+        <div class="modulo-flecha">↗</div>
+      </div>
+      <div class="modulo-tarjeta revelar">
+        <div class="modulo-icono">[ MOD_04 ] ── RAG & DATOS</div>
+        <h3 class="modulo-nombre">RAG & bases de conocimiento</h3>
+        <p class="modulo-desc">Conectá LLMs a tus propios datos. Vector databases, embeddings, chunking strategies.</p>
+        <div class="modulo-flecha">↗</div>
+      </div>
+      <div class="modulo-tarjeta revelar">
+        <div class="modulo-icono">[ MOD_05 ] ── VISIÓN</div>
+        <h3 class="modulo-nombre">IA multimodal & Visión</h3>
+        <p class="modulo-desc">Procesamiento de imágenes, video, audio. Modelos multimodales y casos de uso concretos.
+        </p>
+        <div class="modulo-flecha">↗</div>
+      </div>
+      <div class="modulo-tarjeta revelar">
+        <div class="modulo-icono">[ MOD_06 ] ── PRODUCCIÓN</div>
+        <h3 class="modulo-nombre">IA en producción</h3>
+        <p class="modulo-desc">Deploy, monitoreo, costos, latencia. Llevá tus modelos a producción sin que todo explote.
+        </p>
+        <div class="modulo-flecha">↗</div>
+      </div>
     </div>
   </section>
 
-  <!-- CTA -->
-  <section class="index-cta-seccion" id="contacto">
-    <div class="index-cta-fondo"></div>
-    <p class="index-cta-subtitulo index-revelar">// ¿Listo para el siguiente nivel?</p>
-    <h2 class="index-cta-titulo index-revelar">
-      Empecemos<br>a construir
-    </h2>
-    <a href="mailto:hola@hackhouse.dev" class="index-cta-boton index-revelar">
-      Contactar ahora
-    </a>
+  <!-- Divisor -->
+  <div class="divisor"><span class="divisor-texto">// ruta de aprendizaje</span></div>
+
+  <!-- Ruta -->
+  <section class="seccion" id="ruta">
+    <div class="seccion-cabecera revelar">
+      <div class="seccion-numero">02</div>
+      <div>
+        <h2 class="seccion-titulo">
+          <span>// Tu progreso mes a mes</span>
+          Ruta de<br>Aprendizaje
+        </h2>
+      </div>
+    </div>
+
+    <div class="ruta-lista">
+      <div class="ruta-item revelar">
+        <div class="ruta-num">01</div>
+        <div class="ruta-linea"></div>
+        <div class="ruta-contenido">
+          <div class="ruta-tag">// Semanas 1–2 · Nivel cero</div>
+          <div class="ruta-titulo">Entendés la IA</div>
+          <div class="ruta-desc">Desmitificamos los buzzwords. Aprendés qué son realmente los LLMs, cómo se entrenan,
+            qué pueden y qué no pueden hacer. Base sólida antes de tocar código.</div>
+        </div>
+      </div>
+      <div class="ruta-item revelar">
+        <div class="ruta-num">02</div>
+        <div class="ruta-linea"></div>
+        <div class="ruta-contenido">
+          <div class="ruta-tag">// Semanas 3–5 · Nivel intermedio</div>
+          <div class="ruta-titulo">Construís tu primera IA</div>
+          <div class="ruta-desc">Primeros proyectos funcionales. APIs de OpenAI, Anthropic, Google. Aplicaciones con
+            contexto, memoria y personalidad. Tu primer chatbot real.</div>
+        </div>
+      </div>
+      <div class="ruta-item revelar">
+        <div class="ruta-num">03</div>
+        <div class="ruta-linea"></div>
+        <div class="ruta-contenido">
+          <div class="ruta-tag">// Semanas 6–9 · Nivel avanzado</div>
+          <div class="ruta-titulo">Automatizás con agentes</div>
+          <div class="ruta-desc">Agentes con herramientas, flujos multi-step, integración con sistemas externos. Empezás
+            a construir cosas que impresionan.</div>
+        </div>
+      </div>
+      <div class="ruta-item revelar">
+        <div class="ruta-num">04</div>
+        <div class="ruta-linea"></div>
+        <div class="ruta-contenido">
+          <div class="ruta-tag">// Semanas 10–12 · Nivel producción</div>
+          <div class="ruta-titulo">Deployás, monetizás, escalás</div>
+          <div class="ruta-desc">Tu proyecto final en producción. Cómo cobrar por lo que construís. Estrategias de
+            go-to-market para productos de IA. El final del curso es el inicio de tu carrera.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Divisor -->
+  <div class="divisor"><span class="divisor-texto">// quiero dar clases</span></div>
+
+  <!-- Docentes -->
+  <section class="docente-seccion" id="docentes">
+    <div class="docente-bloque revelar">
+      <div>
+        <div class="docente-tag">[ SYS_MSG ] ── ¿Sabés de IA y querés enseñar?</div>
+        <h2 class="docente-titulo">Presentate<br>como docente</h2>
+        <p class="docente-desc">
+          Si trabajás con IA, tenés experiencia real en el campo y querés compartir ese conocimiento, HackHouse Academy
+          busca instructores.
+          No necesitás tener un doctorado. Necesitás saber de lo que hablás, poder enseñarlo y las ganas de hacerlo
+          bien.
+        </p>
+      </div>
+      <div class="docente-acciones">
+        <a href="postulaciones.html" class="btn-docente" id="abrir-modal-docente">Postularme ahora</a>
+        <a href="mailto:academia@hackhouse.dev" class="btn-docente-ghost">Escribir por mail</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Divisor -->
+  <div class="divisor"><span class="divisor-texto">// inscripción abierta</span></div>
+
+  <!-- CTA final -->
+  <section class="cta-seccion" id="inscripcion">
+    <div class="cta-fondo"></div>
+    <p class="cta-subtitulo revelar">// El futuro no espera. Tampoco deberías vos.</p>
+    <h2 class="cta-titulo revelar">Empezá<br>hoy</h2>
+    <a href="mailto:academia@hackhouse.dev" class="cta-boton revelar">Reservar mi lugar</a>
   </section>
 
   <!-- Footer -->
-  <footer class="index-footer">
-    <span>© 2026 HackHouse — Todos los derechos reservados</span>
+  <footer>
+    <span>© 2026 HackHouse Academy — Todos los derechos reservados</span>
     <span>Sistema v1.0.0 // Online</span>
-    <span>hola@hackhouse.dev</span>
+    <span>academia@hackhouse.dev</span>
   </footer>
 
-  <script src="public/js/script.js"></script>
+  <!-- Modal docente -->
+  <div class="modal-overlay" id="modal-docente">
+    <div class="modal">
+      <button class="modal-cerrar" id="cerrar-modal">[ ESC / cerrar ]</button>
+      <div class="modal-tag">// postulación_docente.exe</div>
+      <h3 class="modal-titulo">Quiero enseñar</h3>
+      <p class="modal-desc">Contanos quién sos y en qué área de IA tenés experiencia. Revisamos todas las postulaciones.
+      </p>
+      <div class="campo-grupo">
+        <label class="campo-label">Nombre completo</label>
+        <input type="text" class="campo-input" placeholder="Tu nombre..." />
+      </div>
+      <div class="campo-grupo">
+        <label class="campo-label">Email de contacto</label>
+        <input type="email" class="campo-input" placeholder="tu@email.com" />
+      </div>
+      <div class="campo-grupo">
+        <label class="campo-label">Área de especialización</label>
+        <select class="campo-select">
+          <option value="">Seleccioná tu área...</option>
+          <option>Fundamentos de IA / ML</option>
+          <option>Prompt Engineering & LLMs</option>
+          <option>Agentes & Automatización</option>
+          <option>RAG & Bases de datos vectoriales</option>
+          <option>IA Multimodal & Visión</option>
+          <option>IA en producción & MLOps</option>
+          <option>Otra especialización</option>
+        </select>
+      </div>
+      <div class="campo-grupo">
+        <label class="campo-label">Contanos brevemente tu experiencia</label>
+        <textarea class="campo-input" rows="4"
+          placeholder="¿Con qué trabajás? ¿Qué proyectos tenés? ¿Por qué querés enseñar?..."
+          style="resize: vertical;"></textarea>
+      </div>
+      <button class="btn-enviar">Enviar postulación →</button>
+    </div>
+  </div>
+
+  <script src="public/js/academy.js"></script>
 </body>
 
 </html>

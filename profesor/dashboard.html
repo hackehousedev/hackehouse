@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Docente — HackHouse Academy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="css/profesor.css" />
+
+</head>
+
+<body>
+
+    <!-- Cursor -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-punto" id="cursor-punto"></div>
+
+    <!-- Barra progreso scroll -->
+    <div class="progreso" id="progreso"></div>
+
+    <!-- Canvas fondo -->
+    <canvas class="canvas-fondo" id="canvas-fondo"></canvas>
+    <div class="ruido"></div>
+    <div class="scanline"></div>
+
+    <div class="layout">
+
+        <!-- ═══════════════════════════════
+         SIDEBAR
+    ═══════════════════════════════ -->
+        <aside class="sidebar" id="sidebar">
+
+            <a href="dashboard.html" class="sidebar-logo">
+                <span class="sidebar-logo-marca"><span class="c">[</span>HackHouse<span class="c">]</span></span>
+                <span class="sidebar-logo-sub">// instructor_panel.exe</span>
+            </a>
+
+            <div class="sidebar-perfil">
+                <div class="perfil-avatar">MR</div>
+                <div class="perfil-info">
+                    <div class="perfil-nombre">Matías Rodríguez</div>
+                    <div class="perfil-rol">// instructor · nivel 2</div>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+
+                <div class="nav-grupo">
+                    <div class="nav-grupo-label">// general</div>
+                    <a class="nav-item activo" data-vista="overview" href="#">
+                        <span class="nav-item-icono">⊞</span>
+                        Overview
+                    </a>
+                    <a class="nav-item" data-vista="notificaciones" href="#">
+                        <span class="nav-item-icono">◈</span>
+                        Notificaciones
+                        <span class="nav-badge live">3</span>
+                    </a>
+                </div>
+
+                <div class="nav-grupo">
+                    <div class="nav-grupo-label">// mi curso</div>
+                    <a class="nav-item" data-vista="curso" href="#">
+                        <span class="nav-item-icono">▤</span>
+                        Módulos y clases
+                    </a>
+                    <a class="nav-item" data-vista="alumnos" href="#">
+                        <span class="nav-item-icono">◉</span>
+                        Alumnos
+                        <span class="nav-badge">124</span>
+                    </a>
+                    <a class="nav-item" data-vista="reseñas" href="#">
+                        <span class="nav-item-icono">★</span>
+                        Reseñas
+                    </a>
+                </div>
+
+                <div class="nav-grupo">
+                    <div class="nav-grupo-label">// finanzas</div>
+                    <a class="nav-item" data-vista="finanzas" href="#">
+                        <span class="nav-item-icono">$</span>
+                        Ingresos
+                    </a>
+                    <a class="nav-item" data-vista="analytics" href="#">
+                        <span class="nav-item-icono">∑</span>
+                        Analytics
+                    </a>
+                </div>
+
+                <div class="nav-grupo">
+                    <div class="nav-grupo-label">// cuenta</div>
+                    <a class="nav-item" data-vista="perfil" href="#">
+                        <span class="nav-item-icono">∅</span>
+                        Mi perfil
+                    </a>
+                    <a class="nav-item" href="postulaciones.html">
+                        <span class="nav-item-icono">↗</span>
+                        Volver a postulación
+                    </a>
+                </div>
+
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-footer-sistema">
+                    Sistema v1.0.0 · Online<br>
+                    © 2026 HackHouse Academy
+                </div>
+            </div>
+
+        </aside>
+
+        <div class="main">
+
+            <!-- Topbar -->
+            <header class="topbar">
+                <div class="topbar-izq">
+                    <button class="menu-movil-btn" id="menu-movil-btn" type="button" aria-label="Abrir menu"
+                        aria-controls="sidebar" aria-expanded="false">[ menu ]</button>
+                    <span class="topbar-seccion" id="topbar-seccion">Overview</span>
+                    <span class="topbar-separador">/</span>
+                    <span class="topbar-ruta" id="topbar-ruta">// dashboard_docente.exe</span>
+                </div>
+                <div class="topbar-der">
+                    <span class="topbar-hora" id="topbar-hora">--:--:--</span>
+                    <button class="topbar-notif">[ notif ]</button>
+                </div>
+            </header>
+
+            <!-- ══════════════════════
+           VISTA: OVERVIEW
+      ══════════════════════ -->
+            <div class="pagina vista activa" id="vista-overview">
+
+                <div class="bienvenida">
+                    <div>
+                        <div class="bienvenida-tag">// bienvenido de vuelta</div>
+                        <h1 class="bienvenida-titulo">
+                            <span>instructor_panel.v1</span>
+                            Hola, Matías
+                        </h1>
+                        <div class="bienvenida-meta">Última conexión: hoy · 09:14hs · Buenos Aires</div>
+                    </div>
+                    <div class="bienvenida-acciones">
+                        <button class="btn-accion" onclick="irVista('curso')">Editar curso</button>
+                        <button class="btn-accion btn-accion--primario" onclick="irVista('analytics')">Ver analytics
+                            →</button>
+                    </div>
+                </div>
+
+                <!-- KPI Grid -->
+                <div class="kpi-grid">
+
+                    <div class="kpi-card">
+                        <div class="kpi-label">Alumnos activos</div>
+                        <div class="kpi-valor">124<span class="kpi-unidad">total</span></div>
+                        <div class="kpi-tendencia">
+                            <span class="up">↑ +18</span> vs mes anterior
+                        </div>
+                        <svg class="kpi-sparkline" viewBox="0 0 80 40" preserveAspectRatio="none">
+                            <polyline points="0,35 10,28 20,30 30,18 40,22 50,14 60,16 70,8 80,5" fill="none"
+                                stroke="rgba(242,242,242,.6)" stroke-width="1.5" />
+                        </svg>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-label">Ingresos totales</div>
+                        <div class="kpi-valor">$4.820<span class="kpi-unidad">usd</span></div>
+                        <div class="kpi-tendencia">
+                            <span class="up">↑ +$680</span> este mes
+                        </div>
+                        <svg class="kpi-sparkline" viewBox="0 0 80 40" preserveAspectRatio="none">
+                            <polyline points="0,38 10,34 20,36 30,26 40,20 50,22 60,15 70,10 80,7" fill="none"
+                                stroke="rgba(242,242,242,.6)" stroke-width="1.5" />
+                        </svg>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-label">Completitud media</div>
+                        <div class="kpi-valor">68<span class="kpi-unidad">%</span></div>
+                        <div class="kpi-tendencia">
+                            <span class="up">↑ +4%</span> vs semana pasada
+                        </div>
+                        <svg class="kpi-sparkline" viewBox="0 0 80 40" preserveAspectRatio="none">
+                            <polyline points="0,30 15,26 30,22 45,18 60,14 80,10" fill="none"
+                                stroke="rgba(242,242,242,.6)" stroke-width="1.5" />
+                        </svg>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-label">Rating del curso</div>
+                        <div class="kpi-valor">4.8<span class="kpi-unidad">/ 5</span></div>
+                        <div class="kpi-tendencia">
+                            <span>★★★★★</span> 47 reseñas
+                        </div>
+                        <svg class="kpi-sparkline" viewBox="0 0 80 40" preserveAspectRatio="none">
+                            <polyline points="0,20 20,18 40,22 60,15 80,12" fill="none" stroke="rgba(242,242,242,.6)"
+                                stroke-width="1.5" />
+                        </svg>
+                    </div>
+
+                </div>
+
+                <!-- Métricas secundarias -->
+                <div class="mini-metricas">
+                    <div class="mini-metrica">
+                        <div class="mini-metrica-label">// módulos publicados</div>
+                        <div class="mini-metrica-valor">18 <span
+                                style="font-size:.8rem;opacity:.4;font-family:var(--fuente-mono)">/ 24</span></div>
+                        <div class="mini-metrica-sub">75% del curso completo</div>
+                    </div>
+                    <div class="mini-metrica">
+                        <div class="mini-metrica-label">// tiempo total del curso</div>
+                        <div class="mini-metrica-valor">14.5<span
+                                style="font-size:.8rem;opacity:.4;font-family:var(--fuente-mono)"> hs</span></div>
+                        <div class="mini-metrica-sub">Promedio: 48 min por clase</div>
+                    </div>
+                    <div class="mini-metrica">
+                        <div class="mini-metrica-label">// nuevas inscripciones hoy</div>
+                        <div class="mini-metrica-valor">7</div>
+                        <div class="mini-metrica-sub">Pico: martes y jueves</div>
+                    </div>
+                    <div class="mini-metrica">
+                        <div class="mini-metrica-label">// tasa de retención</div>
+                        <div class="mini-metrica-valor">82<span
+                                style="font-size:.8rem;opacity:.4;font-family:var(--fuente-mono)">%</span></div>
+                        <div class="mini-metrica-sub">Benchmark plataforma: 74%</div>
+                    </div>
+                </div>
+
+                <!-- Dos columnas -->
+                <div class="grid-2col">
+
+                    <!-- Inscripciones por mes -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <span class="panel-titulo">Inscripciones por mes</span>
+                            <button class="panel-accion">[ ver todo ]</button>
+                        </div>
+                        <div class="panel-cuerpo">
+                            <div class="chart-barras" id="chart-barras">
+                                <!-- generado por JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actividad reciente -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <span class="panel-titulo">Actividad reciente</span>
+                            <button class="panel-accion">[ limpiar ]</button>
+                        </div>
+                        <div class="panel-cuerpo">
+
+                            <div class="actividad-item">
+                                <div class="actividad-linea">
+                                    <div class="actividad-punto"></div>
+                                </div>
+                                <div class="actividad-cuerpo">
+                                    <div class="actividad-texto"><strong>Lucas M.</strong> completó el módulo 12 — RAG
+                                        con pgvector</div>
+                                    <div class="actividad-tiempo">hace 8 minutos</div>
+                                </div>
+                            </div>
+
+                            <div class="actividad-item">
+                                <div class="actividad-linea">
+                                    <div class="actividad-punto"></div>
+                                </div>
+                                <div class="actividad-cuerpo">
+                                    <div class="actividad-texto"><strong>Valentina S.</strong> dejó una reseña de ★★★★★
+                                    </div>
+                                    <div class="actividad-tiempo">hace 1 hora</div>
+                                </div>
+                            </div>
+
+                            <div class="actividad-item">
+                                <div class="actividad-linea">
+                                    <div class="actividad-punto"></div>
+                                </div>
+                                <div class="actividad-cuerpo">
+                                    <div class="actividad-texto">Nueva inscripción al curso — <strong>Jorge P.</strong>
+                                    </div>
+                                    <div class="actividad-tiempo">hace 2 horas</div>
+                                </div>
+                            </div>
+
+                            <div class="actividad-item">
+                                <div class="actividad-linea">
+                                    <div class="actividad-punto"></div>
+                                </div>
+                                <div class="actividad-cuerpo">
+                                    <div class="actividad-texto">Pago acreditado <strong>$38 USD</strong> — revenue
+                                        share enero</div>
+                                    <div class="actividad-tiempo">hace 5 horas</div>
+                                </div>
+                            </div>
+
+                            <div class="actividad-item">
+                                <div class="actividad-linea">
+                                    <div class="actividad-punto"></div>
+                                </div>
+                                <div class="actividad-cuerpo">
+                                    <div class="actividad-texto"><strong>María L.</strong> hizo una pregunta en módulo
+                                        07</div>
+                                    <div class="actividad-tiempo">ayer · 22:41</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Grilla 3 col -->
+                <div class="grid-3col">
+
+                    <!-- Alumnos recientes -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <span class="panel-titulo">Alumnos recientes</span>
+                            <button class="panel-accion" onclick="irVista('alumnos')">[ ver todos ]</button>
+                        </div>
+                        <div class="panel-cuerpo">
+
+                            <div class="alumno-row">
+                                <div class="alumno-avatar-mini">LM</div>
+                                <div class="alumno-info">
+                                    <div class="alumno-nombre">Lucas Medina</div>
+                                    <div class="alumno-meta">se unió hace 2 días</div>
+                                </div>
+                                <div class="alumno-progreso-wrap">
+                                    <div class="alumno-progreso-barra">
+                                        <div class="alumno-progreso-fill" style="width:72%"></div>
+                                    </div>
+                                    <div class="alumno-progreso-pct">72%</div>
+                                </div>
+                            </div>
+
+                            <div class="alumno-row">
+                                <div class="alumno-avatar-mini">VS</div>
+                                <div class="alumno-info">
+                                    <div class="alumno-nombre">Valentina Suárez</div>
+                                    <div class="alumno-meta">se unió hace 5 días</div>
+                                </div>
+                                <div class="alumno-progreso-wrap">
+                                    <div class="alumno-progreso-barra">
+                                        <div class="alumno-progreso-fill" style="width:91%"></div>
+                                    </div>
+                                    <div class="alumno-progreso-pct">91%</div>
+                                </div>
+                            </div>
+
+                            <div class="alumno-row">
+                                <div class="alumno-avatar-mini">JP</div>
+                                <div class="alumno-info">
+                                    <div class="alumno-nombre">Jorge Pereira</div>
+                                    <div class="alumno-meta">se unió hoy</div>
+                                </div>
+                                <div class="alumno-progreso-wrap">
+                                    <div class="alumno-progreso-barra">
+                                        <div class="alumno-progreso-fill" style="width:4%"></div>
+                                    </div>
+                                    <div class="alumno-progreso-pct">4%</div>
+                                </div>
+                            </div>
+
+                            <div class="alumno-row">
+                                <div class="alumno-avatar-mini">CR</div>
+                                <div class="alumno-info">
+                                    <div class="alumno-nombre">Camila Reyes</div>
+                                    <div class="alumno-meta">se unió hace 1 semana</div>
+                                </div>
+                                <div class="alumno-progreso-wrap">
+                                    <div class="alumno-progreso-barra">
+                                        <div class="alumno-progreso-fill" style="width:58%"></div>
+                                    </div>
+                                    <div class="alumno-progreso-pct">58%</div>
+                                </div>
+                            </div>
+
+                            <div class="alumno-row">
+                                <div class="alumno-avatar-mini">FG</div>
+                                <div class="alumno-info">
+                                    <div class="alumno-nombre">Franco García</div>
+                                    <div class="alumno-meta">se unió hace 10 días</div>
+                                </div>
+                                <div class="alumno-progreso-wrap">
+                                    <div class="alumno-progreso-barra">
+                                        <div class="alumno-progreso-fill" style="width:35%"></div>
+                                    </div>
+                                    <div class="alumno-progreso-pct">35%</div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Tareas pendientes -->
+                    <div class="panel">
+                        <div class="panel-header">
+                            <span class="panel-titulo">Pendientes</span>
+                            <button class="panel-accion">[ agregar ]</button>
+                        </div>
+                        <div class="panel-cuerpo">
+
+                            <div class="tarea-item">
+                                <div class="tarea-check"></div>
+                                <span class="tarea-texto">Grabar módulo 19 — Fine-tuning con LoRA</span>
+                                <span class="tarea-prioridad">alta</span>
+                            </div>
+                            <div class="tarea-item">
+                                <div class="tarea-check"></div>
+                                <span class="tarea-texto">Responder preguntas pendientes (4)</span>
+                                <span class="tarea-prioridad">media</span>
+                            </div>
+                            <div class="tarea-item">
+                                <div class="tarea-check"></div>
+                                <span class="tarea-texto">Actualizar notebook módulo 12</span>
+                                <span class="tarea-prioridad">media</span>
+                            </div>
+                            <div class="tarea-item done">
+                                <div class="tarea-check"></div>
+                                <span class="tarea-texto">Subir slides módulo 18</span>
+                                <span class="tarea-prioridad">baja</span>
+                            </div>
+                            <div class="tarea-item done">
+                                <div class="tarea-check"></div>
+                                <span class="tarea-texto">Revisar descripción del curso</span>
+                                <span class="tarea-prioridad">baja</span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ══════════════════════
+           VISTA: CURSO
+      ══════════════════════ -->
+            <div class="pagina vista" id="vista-curso">
+
+                <div class="bienvenida" style="margin-bottom:32px;">
+                    <div>
+                        <div class="bienvenida-tag">// propuesta_de_curso.json</div>
+                        <h1 class="bienvenida-titulo">
+                            <span>mi_curso.v1</span>
+                            Mi curso
+                        </h1>
+                    </div>
+                    <div class="bienvenida-acciones">
+                        <button class="btn-accion">Vista previa</button>
+                        <button class="btn-accion btn-accion--primario">Publicar cambios →</button>
+                    </div>
+                </div>
+
+                <!-- Hero del curso -->
+                <div class="curso-hero" data-nivel="AVANZADO">
+                    <div class="curso-tag">// RAG & Bases de datos vectoriales · Nivel avanzado</div>
+                    <h2 class="curso-titulo">RAG Avanzado con LangChain<br>y pgvector desde cero</h2>
+                    <p class="curso-desc">
+                        Construí sistemas de Retrieval-Augmented Generation production-ready usando LangChain,
+                        embeddings de OpenAI y PostgreSQL con la extensión pgvector. Del setup al deploy.
+                    </p>
+                    <div class="curso-meta-row">
+                        <div class="curso-meta-item">
+                            <div class="curso-meta-label">// estado</div>
+                            <div class="curso-meta-valor">En producción ✓</div>
+                        </div>
+                        <div class="curso-meta-item">
+                            <div class="curso-meta-label">// nivel</div>
+                            <div class="curso-meta-valor">Avanzado</div>
+                        </div>
+                        <div class="curso-meta-item">
+                            <div class="curso-meta-label">// duración total</div>
+                            <div class="curso-meta-valor">14h 32min</div>
+                        </div>
+                        <div class="curso-meta-item">
+                            <div class="curso-meta-label">// clases</div>
+                            <div class="curso-meta-valor">24 módulos</div>
+                        </div>
+                        <div class="curso-meta-item">
+                            <div class="curso-meta-label">// tecnologías</div>
+                            <div class="curso-meta-valor">Python · LangChain · pgvector · FastAPI</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Estado del pipeline -->
+                <div class="estado-curso">
+                    <div class="estado-etapa completada">
+                        <div class="estado-etapa-num">01</div>
+                        <div class="estado-etapa-titulo">Postulación</div>
+                        <span class="estado-check">✓</span>
+                    </div>
+                    <div class="estado-etapa completada">
+                        <div class="estado-etapa-num">02</div>
+                        <div class="estado-etapa-titulo">Revisión</div>
+                        <span class="estado-check">✓</span>
+                    </div>
+                    <div class="estado-etapa completada">
+                        <div class="estado-etapa-num">03</div>
+                        <div class="estado-etapa-titulo">Aprobado</div>
+                        <span class="estado-check">✓</span>
+                    </div>
+                    <div class="estado-etapa completada">
+                        <div class="estado-etapa-num">04</div>
+                        <div class="estado-etapa-titulo">Producción</div>
+                        <span class="estado-check">✓</span>
+                    </div>
+                    <div class="estado-etapa actual">
+                        <div class="estado-etapa-num">05</div>
+                        <div class="estado-etapa-titulo">Activo ←</div>
+                    </div>
+                </div>
+
+                <!-- Tabla de módulos -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <span class="panel-titulo">Estructura de módulos</span>
+                        <button class="panel-accion">[ agregar módulo ]</button>
+                    </div>
+                    <div class="panel-cuerpo" style="padding:0;">
+
+                        <div class="modulos-tabla-header">
+                            <div class="modulos-tabla-header-cell">#</div>
+                            <div class="modulos-tabla-header-cell">Título de la clase</div>
+                            <div class="modulos-tabla-header-cell">Tipo</div>
+                            <div class="modulos-tabla-header-cell">Duración</div>
+                            <div class="modulos-tabla-header-cell">Estado</div>
+                        </div>
+
+                        <div class="modulos-lista" id="modulos-lista">
+                            <!-- generado por JS -->
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ══════════════════════
+           VISTA: ALUMNOS
+      ══════════════════════ -->
+            <div class="pagina vista" id="vista-alumnos">
+
+                <div class="bienvenida" style="margin-bottom:32px;">
+                    <div>
+                        <div class="bienvenida-tag">// registro_alumnos.db</div>
+                        <h1 class="bienvenida-titulo">
+                            <span>alumnos_activos</span>
+                            Alumnos
+                        </h1>
+                    </div>
+                    <div class="bienvenida-acciones">
+                        <button class="btn-accion">Exportar CSV</button>
+                        <button class="btn-accion btn-accion--primario">Enviar anuncio →</button>
+                    </div>
+                </div>
+
+                <div class="mini-metricas" style="margin-bottom:28px;">
+                    <div class="mini-metrica">
+                        <div class="mini-metrica-label">// total inscritos</div>
+                        <div class="mini-metrica-valor">124</div>
+                        <div class="mini-metrica-sub">↑ 7 esta semana</div>
+                    </div>
+                    <div class="mini-metrica">
+                        <div class="mini-metrica-label">// completaron el curso</div>
+                        <div class="mini-metrica-valor">38</div>
+                        <div class="mini-metrica-sub">30.6% completion rate</div>
+                    </div>
+                    <div class="mini-metrica">
+                        <div class="mini-metrica-label">// promedio de avance</div>
+                        <div class="mini-metrica-valor">68%</div>
+                        <div class="mini-metrica-sub">Mediana: 71%</div>
+                    </div>
+                    <div class="mini-metrica">
+                        <div class="mini-metrica-label">// inactivos (+30 días)</div>
+                        <div class="mini-metrica-valor">19</div>
+                        <div class="mini-metrica-sub">15% del total</div>
+                    </div>
+                </div>
+
+                <div class="alumnos-filtros">
+                    <button class="filtro-btn activo">Todos (124)</button>
+                    <button class="filtro-btn">Activos (87)</button>
+                    <button class="filtro-btn">Completaron (38)</button>
+                    <button class="filtro-btn">Inactivos (19)</button>
+                    <button class="filtro-btn">Con reseña (47)</button>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-cuerpo" style="padding:0;">
+
+                        <div class="tabla-alumno-header">
+                            <div class="tabla-alumno-th">#</div>
+                            <div class="tabla-alumno-th">Nombre</div>
+                            <div class="tabla-alumno-th">Ingreso</div>
+                            <div class="tabla-alumno-th">Último acceso</div>
+                            <div class="tabla-alumno-th">Avance</div>
+                            <div class="tabla-alumno-th">Estado</div>
+                        </div>
+
+                        <div id="tabla-alumnos">
+                            <!-- generado por JS -->
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ══════════════════════
+           VISTA: FINANZAS
+      ══════════════════════ -->
+            <div class="pagina vista" id="vista-finanzas">
+
+                <div class="bienvenida" style="margin-bottom:32px;">
+                    <div>
+                        <div class="bienvenida-tag">// finanzas_instructor.dat</div>
+                        <h1 class="bienvenida-titulo">
+                            <span>mis_ingresos</span>
+                            Finanzas
+                        </h1>
+                    </div>
+                    <div class="bienvenida-acciones">
+                        <button class="btn-accion">Descargar reporte</button>
+                        <button class="btn-accion btn-accion--primario">Solicitar pago →</button>
+                    </div>
+                </div>
+
+                <div class="finanzas-resumen">
+                    <div class="finanza-item">
+                        <div class="finanza-label">// balance total acumulado</div>
+                        <div class="finanza-valor"><span class="moneda">USD </span>4.820</div>
+                        <div class="finanza-detalle">Desde enero 2025</div>
+                    </div>
+                    <div class="finanza-item">
+                        <div class="finanza-label">// este mes</div>
+                        <div class="finanza-valor"><span class="moneda">USD </span>680</div>
+                        <div class="finanza-detalle">18 ventas · 38% margin</div>
+                    </div>
+                    <div class="finanza-item">
+                        <div class="finanza-label">// pendiente de pago</div>
+                        <div class="finanza-valor"><span class="moneda">USD </span>312</div>
+                        <div class="finanza-detalle">Próximo pago: 1 feb 2026</div>
+                    </div>
+                </div>
+
+                <div class="grid-2col">
+
+                    <div class="panel">
+                        <div class="panel-header">
+                            <span class="panel-titulo">Ingresos mensuales</span>
+                            <button class="panel-accion">[ 12 meses ]</button>
+                        </div>
+                        <div class="panel-cuerpo">
+                            <div class="chart-barras" id="chart-finanzas"></div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-header">
+                            <span class="panel-titulo">Distribución de ingresos</span>
+                        </div>
+                        <div class="panel-cuerpo">
+                            <div class="donut-wrap">
+                                <svg class="donut-svg" viewBox="0 0 120 120">
+                                    <circle cx="60" cy="60" r="48" fill="none" stroke="rgba(242,242,242,.06)"
+                                        stroke-width="14" />
+                                    <!-- Revenue share: 72% -->
+                                    <circle cx="60" cy="60" r="48" fill="none" stroke="rgba(242,242,242,.35)"
+                                        stroke-width="14" stroke-dasharray="216.8 84.8" stroke-dashoffset="0"
+                                        transform="rotate(-90 60 60)" />
+                                    <!-- Bonus: 18% -->
+                                    <circle cx="60" cy="60" r="48" fill="none" stroke="rgba(242,242,242,.15)"
+                                        stroke-width="14" stroke-dasharray="54.2 247.4" stroke-dashoffset="-216.8"
+                                        transform="rotate(-90 60 60)" />
+                                    <!-- Otros: 10% -->
+                                    <circle cx="60" cy="60" r="48" fill="none" stroke="rgba(242,242,242,.07)"
+                                        stroke-width="14" stroke-dasharray="30.2 271.4" stroke-dashoffset="-271"
+                                        transform="rotate(-90 60 60)" />
+                                    <text x="60" y="56" text-anchor="middle" font-family="Orbitron" font-size="14"
+                                        font-weight="900" fill="rgba(242,242,242,.7)">72%</text>
+                                    <text x="60" y="70" text-anchor="middle" font-family="Share Tech Mono" font-size="7"
+                                        fill="rgba(242,242,242,.2)">REV SHARE</text>
+                                </svg>
+                                <div class="donut-leyenda">
+                                    <div class="leyenda-item">
+                                        <div class="leyenda-linea"></div>Revenue share<span
+                                            class="leyenda-pct">72%</span>
+                                    </div>
+                                    <div class="leyenda-item">
+                                        <div class="leyenda-linea dim"></div>Bonos<span class="leyenda-pct">18%</span>
+                                    </div>
+                                    <div class="leyenda-item">
+                                        <div class="leyenda-linea dim" style="background:rgba(242,242,242,.06)"></div>
+                                        Otros<span class="leyenda-pct">10%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Tabla transacciones -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <span class="panel-titulo">Historial de pagos</span>
+                        <button class="panel-accion">[ exportar ]</button>
+                    </div>
+                    <div class="panel-cuerpo" style="padding:0;">
+                        <div class="tabla-wrap">
+                            <table class="tabla">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Fecha</th>
+                                        <th>Concepto</th>
+                                        <th>Ventas</th>
+                                        <th>Monto</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-transacciones">
+                                    <!-- generado por JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ══════════════════════
+           VISTA: ANALYTICS
+      ══════════════════════ -->
+            <div class="pagina vista" id="vista-analytics">
+
+                <div class="bienvenida" style="margin-bottom:32px;">
+                    <div>
+                        <div class="bienvenida-tag">// analytics_engine.py</div>
+                        <h1 class="bienvenida-titulo">
+                            <span>métricas_del_curso</span>
+                            Analytics
+                        </h1>
+                    </div>
+                </div>
+
+                <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Vistas del landing</div>
+                        <div class="kpi-valor">3.240<span class="kpi-unidad">visitas</span></div>
+                        <div class="kpi-tendencia"><span class="up">↑ +22%</span> este mes</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Conversión</div>
+                        <div class="kpi-valor">3.8<span class="kpi-unidad">%</span></div>
+                        <div class="kpi-tendencia">Benchmark: 2.1%</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Horas consumidas</div>
+                        <div class="kpi-valor">1.842<span class="kpi-unidad">hs</span></div>
+                        <div class="kpi-tendencia">Total acumulado</div>
+                    </div>
+                </div>
+
+                <div class="grid-2col" style="margin-top:24px;">
+
+                    <div class="panel">
+                        <div class="panel-header">
+                            <span class="panel-titulo">Tráfico semanal</span>
+                        </div>
+                        <div class="panel-cuerpo">
+                            <div class="chart-linea-wrap">
+                                <svg viewBox="0 0 400 120" preserveAspectRatio="none">
+                                    <defs>
+                                        <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="0%" stop-color="rgba(242,242,242,.08)" />
+                                            <stop offset="100%" stop-color="rgba(242,242,242,0)" />
+                                        </linearGradient>
+                                    </defs>
+                                    <!-- Grid lines -->
+                                    <line x1="0" y1="30" x2="400" y2="30" stroke="rgba(242,242,242,.04)"
+                                        stroke-width="1" />
+                                    <line x1="0" y1="60" x2="400" y2="60" stroke="rgba(242,242,242,.04)"
+                                        stroke-width="1" />
+                                    <line x1="0" y1="90" x2="400" y2="90" stroke="rgba(242,242,242,.04)"
+                                        stroke-width="1" />
+                                    <!-- Área -->
+                                    <path
+                                        d="M0,90 L50,70 L100,80 L150,45 L200,55 L250,30 L300,40 L350,20 L400,15 L400,120 L0,120Z"
+                                        fill="url(#grad)" />
+                                    <!-- Línea -->
+                                    <polyline points="0,90 50,70 100,80 150,45 200,55 250,30 300,40 350,20 400,15"
+                                        fill="none" stroke="rgba(242,242,242,.4)" stroke-width="1.5" />
+                                    <!-- Puntos -->
+                                    <circle cx="250" cy="30" r="4" fill="var(--claro)" opacity=".6" />
+                                    <circle cx="400" cy="15" r="4" fill="var(--claro)" opacity=".6" />
+                                </svg>
+                            </div>
+                            <div class="chart-linea-eje">
+                                <span>lun</span><span>mar</span><span>mié</span><span>jue</span>
+                                <span>vie</span><span>sáb</span><span>dom</span><span>hoy</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-header">
+                            <span class="panel-titulo">Módulos más vistos</span>
+                        </div>
+                        <div class="panel-cuerpo">
+                            <div id="modulos-top"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Embudo conversión -->
+                <div class="panel" style="margin-top:24px;">
+                    <div class="panel-header">
+                        <span class="panel-titulo">Embudo de conversión</span>
+                    </div>
+                    <div class="panel-cuerpo">
+                        <div style="display:flex;flex-direction:column;gap:8px;" id="embudo"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ══════════════════════
+           VISTA: RESEÑAS
+      ══════════════════════ -->
+            <div class="pagina vista" id="vista-reseñas">
+
+                <div class="bienvenida" style="margin-bottom:32px;">
+                    <div>
+                        <div class="bienvenida-tag">// reseñas_y_feedback.json</div>
+                        <h1 class="bienvenida-titulo">
+                            <span>feedback_alumnos</span>
+                            Reseñas
+                        </h1>
+                    </div>
+                </div>
+
+                <div class="grid-3col">
+                    <div class="panel">
+                        <div class="panel-header"><span class="panel-titulo">Resumen de rating</span></div>
+                        <div class="panel-cuerpo">
+                            <div class="rating-wrap" style="margin-bottom:24px;">
+                                <div>
+                                    <div class="rating-num">4.8</div>
+                                    <div class="rating-estrellas">★★★★★</div>
+                                    <div class="rating-base">47 reseñas verificadas</div>
+                                </div>
+                                <div class="rating-barras">
+                                    <div class="rating-fila">
+                                        <span class="rating-fila-label">5★</span>
+                                        <div class="rating-fila-barra">
+                                            <div class="rating-fila-fill" style="width:78%"></div>
+                                        </div>
+                                        <span class="rating-fila-n">37</span>
+                                    </div>
+                                    <div class="rating-fila">
+                                        <span class="rating-fila-label">4★</span>
+                                        <div class="rating-fila-barra">
+                                            <div class="rating-fila-fill" style="width:15%"></div>
+                                        </div>
+                                        <span class="rating-fila-n">7</span>
+                                    </div>
+                                    <div class="rating-fila">
+                                        <span class="rating-fila-label">3★</span>
+                                        <div class="rating-fila-barra">
+                                            <div class="rating-fila-fill" style="width:4%"></div>
+                                        </div>
+                                        <span class="rating-fila-n">2</span>
+                                    </div>
+                                    <div class="rating-fila">
+                                        <span class="rating-fila-label">2★</span>
+                                        <div class="rating-fila-barra">
+                                            <div class="rating-fila-fill" style="width:2%"></div>
+                                        </div>
+                                        <span class="rating-fila-n">1</span>
+                                    </div>
+                                    <div class="rating-fila">
+                                        <span class="rating-fila-label">1★</span>
+                                        <div class="rating-fila-barra">
+                                            <div class="rating-fila-fill" style="width:0%"></div>
+                                        </div>
+                                        <span class="rating-fila-n">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-header"><span class="panel-titulo">Notificaciones de reseñas</span></div>
+                        <div class="panel-cuerpo">
+                            <div class="alerta">
+                                <div class="alerta-icono">★</div>
+                                <div class="alerta-texto"><strong>Valentina S.</strong> — ★★★★★<br>"El módulo de
+                                    pgvector es el mejor que vi. Muy claro y directo."</div>
+                                <span class="alerta-hora">2h</span>
+                            </div>
+                            <div class="alerta">
+                                <div class="alerta-icono">★</div>
+                                <div class="alerta-texto"><strong>Lucas M.</strong> — ★★★★☆<br>"Muy buen contenido. Me
+                                    faltó más profundidad en embeddings multilingüe."</div>
+                                <span class="alerta-hora">1d</span>
+                            </div>
+                            <div class="alerta">
+                                <div class="alerta-icono">★</div>
+                                <div class="alerta-texto"><strong>Anónimo</strong> — ★★★☆☆<br>"El ritmo de las últimas
+                                    clases es un poco rápido."</div>
+                                <span class="alerta-hora">3d</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ══════════════════════
+           VISTA: NOTIFICACIONES
+      ══════════════════════ -->
+            <div class="pagina vista" id="vista-notificaciones">
+
+                <div class="bienvenida" style="margin-bottom:32px;">
+                    <div>
+                        <div class="bienvenida-tag">// sys_notifications.log</div>
+                        <h1 class="bienvenida-titulo">
+                            <span>inbox_sistema</span>
+                            Notificaciones
+                        </h1>
+                    </div>
+                    <div class="bienvenida-acciones">
+                        <button class="btn-accion">Marcar todo como leído</button>
+                    </div>
+                </div>
+
+                <div id="lista-notifs">
+                    <!-- generado por JS -->
+                </div>
+
+            </div>
+
+            <!-- ══════════════════════
+           VISTA: PERFIL
+      ══════════════════════ -->
+            <div class="pagina vista" id="vista-perfil">
+
+                <div class="bienvenida" style="margin-bottom:32px;">
+                    <div>
+                        <div class="bienvenida-tag">// perfil_instructor.json</div>
+                        <h1 class="bienvenida-titulo">
+                            <span>mi_perfil</span>
+                            Mi perfil
+                        </h1>
+                    </div>
+                    <div class="bienvenida-acciones">
+                        <button class="btn-accion btn-accion--primario">Guardar cambios →</button>
+                    </div>
+                </div>
+
+                <div class="grid-3col">
+                    <div class="panel">
+                        <div class="panel-header"><span class="panel-titulo">Datos personales</span></div>
+                        <div class="panel-cuerpo" style="display:flex;flex-direction:column;gap:18px;">
+
+                            <div
+                                style="display:flex;align-items:center;gap:20px;padding-bottom:20px;border-bottom:1px solid rgba(242,242,242,.06);">
+                                <div
+                                    style="width:64px;height:64px;border:1px solid rgba(242,242,242,.2);display:flex;align-items:center;justify-content:center;font-family:var(--fuente-titulo);font-size:1.4rem;color:rgba(242,242,242,.5);font-weight:900;">
+                                    MR</div>
+                                <div>
+                                    <div
+                                        style="font-family:var(--fuente-mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(242,242,242,.2);margin-bottom:4px;">
+                                        // avatar</div>
+                                    <button class="btn-accion" style="padding:7px 14px;font-size:.58rem;">Cambiar
+                                        imagen</button>
+                                </div>
+                            </div>
+
+                            <div style="display:flex;flex-direction:column;gap:6px;">
+                                <label
+                                    style="font-family:var(--fuente-mono);font-size:.55rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(242,242,242,.2);">//
+                                    nombre completo</label>
+                                <input type="text" value="Matías Rodríguez"
+                                    style="background:rgba(242,242,242,.03);border:1px solid rgba(242,242,242,.1);color:var(--claro);font-family:var(--fuente-mono);font-size:.82rem;padding:12px 16px;outline:none;width:100%;" />
+                            </div>
+                            <div style="display:flex;flex-direction:column;gap:6px;">
+                                <label
+                                    style="font-family:var(--fuente-mono);font-size:.55rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(242,242,242,.2);">//
+                                    email</label>
+                                <input type="email" value="matias@hackhouse.dev"
+                                    style="background:rgba(242,242,242,.03);border:1px solid rgba(242,242,242,.1);color:var(--claro);font-family:var(--fuente-mono);font-size:.82rem;padding:12px 16px;outline:none;width:100%;" />
+                            </div>
+                            <div style="display:flex;flex-direction:column;gap:6px;">
+                                <label
+                                    style="font-family:var(--fuente-mono);font-size:.55rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(242,242,242,.2);">//
+                                    rol actual</label>
+                                <input type="text" value="ML Engineer · Freelance AI Developer"
+                                    style="background:rgba(242,242,242,.03);border:1px solid rgba(242,242,242,.1);color:var(--claro);font-family:var(--fuente-mono);font-size:.82rem;padding:12px 16px;outline:none;width:100%;" />
+                            </div>
+                            <div style="display:flex;flex-direction:column;gap:6px;">
+                                <label
+                                    style="font-family:var(--fuente-mono);font-size:.55rem;letter-spacing:.28em;text-transform:uppercase;color:rgba(242,242,242,.2);">//
+                                    linkedin</label>
+                                <input type="url" value="https://linkedin.com/in/matiasrodriguez"
+                                    style="background:rgba(242,242,242,.03);border:1px solid rgba(242,242,242,.1);color:var(--claro);font-family:var(--fuente-mono);font-size:.82rem;padding:12px 16px;outline:none;width:100%;" />
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div style="display:flex;flex-direction:column;gap:24px;">
+                        <div class="panel">
+                            <div class="panel-header"><span class="panel-titulo">Estadísticas del perfil</span></div>
+                            <div class="panel-cuerpo">
+                                <div class="mini-metricas" style="border:none;background:none;gap:0;">
+                                    <div class="mini-metrica" style="padding:12px 0;">
+                                        <div class="mini-metrica-label">// cursos publicados</div>
+                                        <div class="mini-metrica-valor">1</div>
+                                    </div>
+                                    <div class="mini-metrica" style="padding:12px 0;">
+                                        <div class="mini-metrica-label">// nivel instructor</div>
+                                        <div class="mini-metrica-valor">Nivel 2</div>
+                                    </div>
+                                    <div class="mini-metrica" style="padding:12px 0;">
+                                        <div class="mini-metrica-label">// miembro desde</div>
+                                        <div class="mini-metrica-valor">Ene 2025</div>
+                                    </div>
+                                    <div class="mini-metrica" style="padding:12px 0;">
+                                        <div class="mini-metrica-label">// estado de cuenta</div>
+                                        <div class="mini-metrica-valor" style="font-size:1rem;">Verificado ✓</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="panel">
+                            <div class="panel-header"><span class="panel-titulo">Configuración de pagos</span></div>
+                            <div class="panel-cuerpo" style="display:flex;flex-direction:column;gap:14px;">
+                                <div
+                                    style="font-family:var(--fuente-mono);font-size:.65rem;color:rgba(242,242,242,.3);letter-spacing:.06em;">
+                                    Método actual: <span style="color:rgba(242,242,242,.55);">PayPal ·
+                                        mati@hackhouse.dev</span></div>
+                                <div
+                                    style="font-family:var(--fuente-mono);font-size:.65rem;color:rgba(242,242,242,.3);letter-spacing:.06em;">
+                                    Ciclo de pago: <span style="color:rgba(242,242,242,.55);">Mensual · día 1</span>
+                                </div>
+                                <div
+                                    style="font-family:var(--fuente-mono);font-size:.65rem;color:rgba(242,242,242,.3);letter-spacing:.06em;">
+                                    Revenue share: <span style="color:rgba(242,242,242,.55);">38%</span></div>
+                                <button class="btn-accion" style="margin-top:4px;">Editar método</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div><!-- /main -->
+    </div><!-- /layout -->
+
+    <div class="sidebar-overlay" id="sidebar-overlay" aria-hidden="true"></div>
+
+    <footer>
+        <span>© 2026 HackHouse Academy — Instructor Panel</span>
+        <span>Sistema v1.0.0 // Online</span>
+        <span>academia@hackhouse.dev</span>
+    </footer>
+
+    <script src="js/profesor.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Postulación Docente — HackHouse Academy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="public/css/postulaciones.css" />
+</head>
+
+<body>
+
+    <!-- Cursor -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-punto" id="cursor-punto"></div>
+
+    <!-- Barra de progreso -->
+    <div class="progreso" id="progreso"></div>
+
+    <!-- Canvas -->
+    <canvas class="canvas-fondo" id="canvas-fondo"></canvas>
+
+    <!-- Textura -->
+    <div class="ruido"></div>
+    <div class="scanline"></div>
+
+    <!-- Esquinas decorativas -->
+    <div class="deco-esquina deco-esquina--tl"><svg viewBox="0 0 20 20">
+            <polyline points="20,0 0,0 0,20" />
+        </svg></div>
+    <div class="deco-esquina deco-esquina--tr"><svg viewBox="0 0 20 20">
+            <polyline points="0,0 20,0 20,20" />
+        </svg></div>
+    <div class="deco-esquina deco-esquina--bl"><svg viewBox="0 0 20 20">
+            <polyline points="20,20 0,20 0,0" />
+        </svg></div>
+    <div class="deco-esquina deco-esquina--br"><svg viewBox="0 0 20 20">
+            <polyline points="0,20 20,20 20,0" />
+        </svg></div>
+
+    <!-- Barra lateral estado -->
+    <div class="barra-estado">
+        <div class="barra-estado-linea"></div>
+        <div class="barra-estado-texto">Postulación docente</div>
+        <div class="barra-estado-linea"></div>
+    </div>
+
+    <!-- Nav principal -->
+    <nav class="nav-principal" id="nav-principal">
+        <a href="index.html" class="logo">
+            <span class="corchete">[</span>HackHouse<span class="corchete">]</span>
+            <span class="academy-tag">ACADEMY</span>
+        </a>
+
+        <ul class="nav-links" id="nav-links-desktop">
+            <li><a href="index.html#modulos">Módulos</a></li>
+            <li><a href="index.html#ruta">Ruta</a></li>
+            <li><a href="index.html#docentes">Docentes</a></li>
+            <li><a href="index.html#inscripcion">Inscripción</a></li>
+        </ul>
+
+        <div class="nav-derecha">
+            <a href="index.html#inscripcion" class="nav-cta">Inscribirse</a>
+
+            <!-- Botón hamburguesa -->
+            <button class="hamburguesa" id="hamburguesa" aria-label="Abrir menú" aria-expanded="false"
+                aria-controls="menu-overlay">
+                <div class="hamburguesa-interior">
+                    <span class="ham-linea ham-linea--1"></span>
+                    <span class="ham-linea ham-linea--2"></span>
+                    <span class="ham-linea ham-linea--3"></span>
+                </div>
+                <span class="hamburguesa-label" id="ham-label">MENU</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ═══════════════════════════════════════
+       MENÚ FULLSCREEN OVERLAY
+  ═══════════════════════════════════════ -->
+    <div class="menu-overlay" id="menu-overlay" aria-hidden="true">
+        <!-- Paneles de entrada (cortinas) -->
+        <div class="menu-panel menu-panel--izq"></div>
+        <div class="menu-panel menu-panel--der"></div>
+
+        <!-- Contenido del menú -->
+        <div class="menu-contenido">
+
+            <!-- Líneas decorativas izquierda -->
+            <div class="menu-deco-izq">
+                <div class="menu-deco-linea"></div>
+                <span class="menu-deco-texto">// nav_system.exe</span>
+                <div class="menu-deco-linea"></div>
+            </div>
+
+            <!-- Links principales -->
+            <nav class="menu-nav" role="navigation" aria-label="Menú principal">
+                <a href="index.html#modulos" class="menu-link" data-num="01">
+                    <span class="menu-link-num">[ 01 ]</span>
+                    <span class="menu-link-texto">Módulos</span>
+                    <span class="menu-link-flecha">↗</span>
+                </a>
+                <a href="index.html#ruta" class="menu-link" data-num="02">
+                    <span class="menu-link-num">[ 02 ]</span>
+                    <span class="menu-link-texto">Ruta</span>
+                    <span class="menu-link-flecha">↗</span>
+                </a>
+                <a href="index.html#docentes" class="menu-link" data-num="03">
+                    <span class="menu-link-num">[ 03 ]</span>
+                    <span class="menu-link-texto">Docentes</span>
+                    <span class="menu-link-flecha">↗</span>
+                </a>
+                <a href="index.html#inscripcion" class="menu-link" data-num="04">
+                    <span class="menu-link-num">[ 04 ]</span>
+                    <span class="menu-link-texto">Inscripción</span>
+                    <span class="menu-link-flecha">↗</span>
+                </a>
+            </nav>
+
+            <!-- Info derecha -->
+            <div class="menu-info">
+                <div class="menu-info-bloque">
+                    <div class="menu-info-label">// estado del sistema</div>
+                    <div class="menu-info-valor">Online · v1.0.0</div>
+                </div>
+                <div class="menu-info-bloque">
+                    <div class="menu-info-label">// contacto</div>
+                    <div class="menu-info-valor">academia@hackhouse.dev</div>
+                </div>
+                <div class="menu-info-bloque">
+                    <div class="menu-info-label">// inscripciones</div>
+                    <div class="menu-info-valor">Abiertas 2026</div>
+                </div>
+                <a href="index.html#inscripcion" class="menu-cta">
+                    Reservar mi lugar →
+                </a>
+            </div>
+
+        </div>
+
+        <!-- Barra inferior menú -->
+        <div class="menu-footer">
+            <span>© 2026 HackHouse Academy</span>
+            <span class="menu-footer-esc">[ ESC para cerrar ]</span>
+            <span>Tecnología sin límites</span>
+        </div>
+
+    </div>
+
+    <!-- Header -->
+    <header class="page-header">
+        <div class="page-header-etiqueta">postulacion_docente.exe · formulario de ingreso</div>
+        <h1 class="page-header-titulo">
+            <span>// quiero enseñar en</span>
+            Postulate como<br>Instructor
+        </h1>
+        <p class="page-header-desc">
+            Completá el formulario con toda la información sobre vos y el curso que querés crear.
+            Revisamos cada postulación. Si tu propuesta encaja, te contactamos.
+        </p>
+        <div class="page-header-meta">
+            <div class="meta-item">
+                <div class="meta-label">// estado</div>
+                <div class="meta-valor">Convocatoria abierta</div>
+            </div>
+            <div class="meta-item">
+                <div class="meta-label">// tiempo estimado</div>
+                <div class="meta-valor">~15 minutos</div>
+            </div>
+            <div class="meta-item">
+                <div class="meta-label">// respuesta en</div>
+                <div class="meta-valor">5–10 días hábiles</div>
+            </div>
+            <div class="meta-item">
+                <div class="meta-label">// contacto</div>
+                <div class="meta-valor">academia@hackhouse.dev</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Formulario -->
+    <main class="form-wrapper">
+
+        <!-- Stepper -->
+        <div class="stepper" id="stepper">
+            <div class="step activo" data-step="1">
+                <div class="step-num">01</div>
+                <div class="step-info">
+                    <div class="step-titulo">Perfil</div>
+                    <div class="step-sub">Quién sos</div>
+                </div>
+                <span class="step-check">✓</span>
+            </div>
+            <div class="step" data-step="2">
+                <div class="step-num">02</div>
+                <div class="step-info">
+                    <div class="step-titulo">Curso</div>
+                    <div class="step-sub">Tu propuesta</div>
+                </div>
+                <span class="step-check">✓</span>
+            </div>
+            <div class="step" data-step="3">
+                <div class="step-num">03</div>
+                <div class="step-info">
+                    <div class="step-titulo">Módulos</div>
+                    <div class="step-sub">Contenido</div>
+                </div>
+                <span class="step-check">✓</span>
+            </div>
+            <div class="step" data-step="4">
+                <div class="step-num">04</div>
+                <div class="step-info">
+                    <div class="step-titulo">Material</div>
+                    <div class="step-sub">Archivos</div>
+                </div>
+                <span class="step-check">✓</span>
+            </div>
+            <div class="step" data-step="5">
+                <div class="step-num">05</div>
+                <div class="step-info">
+                    <div class="step-titulo">Revisión</div>
+                    <div class="step-sub">Confirmación</div>
+                </div>
+                <span class="step-check">✓</span>
+            </div>
+        </div>
+
+        <!-- ═══ SECCIÓN 1: PERFIL ═══ -->
+        <div class="form-seccion activa" id="sec-1">
+
+            <div class="seccion-header">
+                <div class="seccion-num">01</div>
+                <div class="seccion-titulo-wrap">
+                    <div class="seccion-tag">// datos_personales.json</div>
+                    <h2 class="seccion-titulo">Tu perfil como instructor</h2>
+                    <p class="seccion-desc">Información básica sobre vos. Nombre, contacto y experiencia. Sé
+                        específico/a, esto es lo primero que leemos.</p>
+                </div>
+            </div>
+
+            <div class="campos-grilla campos-grilla--2">
+                <div class="campo-grupo">
+                    <label class="campo-label">Nombre <span class="req">*</span></label>
+                    <input type="text" class="campo-input" placeholder="Tu nombre..." />
+                </div>
+                <div class="campo-grupo">
+                    <label class="campo-label">Apellido <span class="req">*</span></label>
+                    <input type="text" class="campo-input" placeholder="Tu apellido..." />
+                </div>
+                <div class="campo-grupo">
+                    <label class="campo-label">Email de contacto <span class="req">*</span></label>
+                    <input type="email" class="campo-input" placeholder="tu@email.com" />
+                </div>
+                <div class="campo-grupo">
+                    <label class="campo-label">LinkedIn / Portfolio</label>
+                    <input type="url" class="campo-input" placeholder="https://..." />
+                </div>
+                <div class="campo-grupo">
+                    <label class="campo-label">País de residencia <span class="req">*</span></label>
+                    <select class="campo-select">
+                        <option value="">Seleccioná...</option>
+                        <option>Argentina</option>
+                        <option>Uruguay</option>
+                        <option>Chile</option>
+                        <option>México</option>
+                        <option>Colombia</option>
+                        <option>España</option>
+                        <option>Otro</option>
+                    </select>
+                </div>
+                <div class="campo-grupo">
+                    <label class="campo-label">Idiomas en los que podés enseñar <span class="req">*</span></label>
+                    <div class="check-grid">
+                        <label class="check-opcion">
+                            <input type="checkbox" checked />
+                            <span class="check-custom"></span>
+                            <span class="check-texto">Español</span>
+                        </label>
+                        <label class="check-opcion">
+                            <input type="checkbox" />
+                            <span class="check-custom"></span>
+                            <span class="check-texto">Inglés</span>
+                        </label>
+                        <label class="check-opcion">
+                            <input type="checkbox" />
+                            <span class="check-custom"></span>
+                            <span class="check-texto">Portugués</span>
+                        </label>
+                        <label class="check-opcion">
+                            <input type="checkbox" />
+                            <span class="check-custom"></span>
+                            <span class="check-texto">Otro</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-divisor"><span class="form-divisor-texto">// experiencia y background</span></div>
+
+            <div class="campos-grilla">
+                <div class="campo-grupo campo-completo">
+                    <label class="campo-label">Rol actual / Ocupación <span class="req">*</span></label>
+                    <input type="text" class="campo-input"
+                        placeholder="Ej: ML Engineer en [empresa], Freelance AI Developer, Investigador en [universidad]..." />
+                </div>
+                <div class="campo-grupo campo-completo">
+                    <label class="campo-label">Contanos sobre tu experiencia en IA <span class="req">*</span></label>
+                    <textarea class="campo-textarea" rows="5" id="bio-textarea"
+                        placeholder="¿Con qué tecnologías trabajás? ¿Qué proyectos relevantes tenés? ¿Cuánto tiempo llevás en el campo? Sé concreto/a..."
+                        maxlength="800"></textarea>
+                    <div class="campo-footer">
+                        <span class="campo-hint">// Mínimo 200 caracteres. Sin relleno.</span>
+                        <span class="char-count" id="bio-count">0 / 800</span>
+                    </div>
+                </div>
+                <div class="campo-grupo campo-completo">
+                    <label class="campo-label">¿Tenés experiencia enseñando?</label>
+                    <div class="radio-grupo">
+                        <label class="radio-opcion">
+                            <input type="radio" name="exp-enseniando" value="si-formal" />
+                            <span class="radio-custom"></span>
+                            <span class="radio-texto">Sí, formalmente (cursos, universidades, institutos)</span>
+                            <span class="radio-badge">formal</span>
+                        </label>
+                        <label class="radio-opcion">
+                            <input type="radio" name="exp-enseniando" value="si-informal" />
+                            <span class="radio-custom"></span>
+                            <span class="radio-texto">Sí, de manera informal (YouTube, workshops, mentorías)</span>
+                            <span class="radio-badge">informal</span>
+                        </label>
+                        <label class="radio-opcion">
+                            <input type="radio" name="exp-enseniando" value="no" />
+                            <span class="radio-custom"></span>
+                            <span class="radio-texto">No, pero tengo mucho para enseñar</span>
+                            <span class="radio-badge">primera vez</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="campo-grupo campo-completo">
+                    <label class="campo-label">GitHub o repositorios relevantes</label>
+                    <input type="url" class="campo-input" placeholder="https://github.com/..." />
+                    <span class="campo-hint">// Opcional pero muy valorado</span>
+                </div>
+            </div>
+
+            <div class="form-nav">
+                <span class="form-nav-info">// paso 1 de 5</span>
+                <div class="form-nav-btns">
+                    <button class="btn-nav btn-nav--primario" onclick="irA(2)">Continuar →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ SECCIÓN 2: CURSO ═══ -->
+        <div class="form-seccion" id="sec-2">
+
+            <div class="seccion-header">
+                <div class="seccion-num">02</div>
+                <div class="seccion-titulo-wrap">
+                    <div class="seccion-tag">// propuesta_de_curso.json</div>
+                    <h2 class="seccion-titulo">Tu propuesta de curso</h2>
+                    <p class="seccion-desc">El qué, el para quién y el por qué. Describí el curso que querés crear con
+                        el mayor detalle posible.</p>
+                </div>
+            </div>
+
+            <div class="campos-grilla">
+                <div class="campo-grupo campo-completo">
+                    <label class="campo-label">Título del curso <span class="req">*</span></label>
+                    <input type="text" class="campo-input" id="titulo-curso"
+                        placeholder="Ej: RAG avanzado con LangChain y pgvector · Agentes autónomos desde cero..."
+                        maxlength="100" />
+                    <div class="campo-footer">
+                        <span class="campo-hint">// Claro, específico y directo al punto</span>
+                        <span class="char-count" id="titulo-count">0 / 100</span>
+                    </div>
+                </div>
+
+                <div class="campo-grupo campo-completo">
+                    <label class="campo-label">Área principal <span class="req">*</span></label>
+                    <div class="radio-grupo">
+                        <label class="radio-opcion">
+                            <input type="radio" name="area" value="fundamentos" />
+                            <span class="radio-custom"></span>
+                            <span class="radio-texto">Fundamentos de IA / Machine Learning</span>
+                        </label>
+                        <label class="radio-opcion">
+                            <input type="radio" name="area" value="llm-prompting" />
+                            <span class="radio-custom"></span>
+                            <span class="radio-texto">Prompt Engineering & LLMs</span>
+                        </label>
+                        <label class="radio-opcion">
+                            <input type="radio" name="area" value="agentes" />
+                            <span class="radio-custom"></span>
+                            <span class="radio-texto">Agentes & Automatización</span>
+                        </label>
+                        <label class="radio-opcion">
+                            <input type="radio" name="area" value="rag-datos" />
+                            <span class="radio-custom"></span>
+                            <span class="radio-texto">RAG & Bases de datos vectoriales</span>
+                        </label>
+                        <label class="radio-opcion">
+                            <input type="radio" name="area" value="multimodal" />
+                            <span class="radio-custom"></span>
+                            <span class="radio-texto">IA Multimodal & Visión por computadora</span>
+                        </label>
+                        <label class="radio-opcion">
+                            <input type="radio" name="area" value="produccion" />
+                            <span class="radio-custom"></span>
+                            <span class="radio-texto">IA en producción & MLOps</span>
+                        </label>
+                        <label class="radio-opcion">
+                            <input type="radio" name="area" value="otro" />
+                            <span class="radio-custom"></span>
+                            <span class="radio-texto">Otra área (especificá abajo)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="campo-grupo campo-completo">
+                    <label class="campo-label">Nivel del curso <span class="req">*</span></label>
+                    <div class="radio-grupo">
+                        <label class="radio-opcion">
+                            <input type="radio" name="nivel" value="principiante" />
+                            <span class="radio-custom"></span>
+                            <span class="radio-texto">Principiante — Sin conocimientos previos de IA</span>
+                            <span class="radio-badge">0→1</span>
+                        </label>
+                        <label class="radio-opcion">
+                            <input type="radio" name="nivel" value="intermedio" />
+                            <span class="radio-custom"></span>
+                            <span class="radio-texto">Intermedio — Conocimientos básicos de programación / IA</span>
+                            <span class="radio-badge">1→2</span>
+                        </label>
+                        <label class="radio-opcion">
+                            <input type="radio" name="nivel" value="avanzado" />
+                            <span class="radio-custom"></span>
+                            <span class="radio-texto">Avanzado — Para profesionales del área</span>
+                            <span class="radio-badge">2→3</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-divisor"><span class="form-divisor-texto">// detalles del programa</span></div>
+
+            <div class="campos-grilla campos-grilla--2">
+                <div class="campo-grupo">
+                    <label class="campo-label">Duración total estimada <span class="req">*</span></label>
+                    <select class="campo-select">
+                        <option value="">Seleccioná...</option>
+                        <option>Menos de 5 horas</option>
+                        <option>5–10 horas</option>
+                        <option>10–20 horas</option>
+                        <option>20–40 horas</option>
+                        <option>Más de 40 horas</option>
+                    </select>
+                </div>
+                <div class="campo-grupo">
+                    <label class="campo-label">Cantidad de clases estimadas <span class="req">*</span></label>
+                    <input type="number" class="campo-input" id="cant-clases" min="1" max="200" placeholder="Ej: 24"
+                        oninput="actualizarClases()" />
+                    <span class="campo-hint">// Podés ajustarlo en el siguiente paso</span>
+                </div>
+                <div class="campo-grupo campo-completo">
+                    <label class="campo-label">Requisitos previos del alumno</label>
+                    <textarea class="campo-textarea" rows="3"
+                        placeholder="Qué conocimientos o herramientas necesita tener el alumno antes de empezar..."></textarea>
+                </div>
+                <div class="campo-grupo campo-completo">
+                    <label class="campo-label">¿Qué tecnologías / herramientas cubre el curso? <span
+                            class="req">*</span></label>
+                    <div class="check-grid">
+                        <label class="check-opcion">
+                            <input type="checkbox" />
+                            <span class="check-custom"></span>
+                            <span class="check-texto">Python</span>
+                        </label>
+                        <label class="check-opcion">
+                            <input type="checkbox" />
+                            <span class="check-custom"></span>
+                            <span class="check-texto">OpenAI API</span>
+                        </label>
+                        <label class="check-opcion">
+                            <input type="checkbox" />
+                            <span class="check-custom"></span>
+                            <span class="check-texto">Anthropic / Claude</span>
+                        </label>
+                        <label class="check-opcion">
+                            <input type="checkbox" />
+                            <span class="check-custom"></span>
+                            <span class="check-texto">LangChain / LlamaIndex</span>
+                        </label>
+                        <label class="check-opcion">
+                            <input type="checkbox" />
+                            <span class="check-custom"></span>
+                            <span class="check-texto">Hugging Face</span>
+                        </label>
+                        <label class="check-opcion">
+                            <input type="checkbox" />
+                            <span class="check-custom"></span>
+                            <span class="check-texto">Vector DBs (Pinecone, Weaviate...)</span>
+                        </label>
+                        <label class="check-opcion">
+                            <input type="checkbox" />
+                            <span class="check-custom"></span>
+                            <span class="check-texto">FastAPI / deployment</span>
+                        </label>
+                        <label class="check-opcion">
+                            <input type="checkbox" />
+                            <span class="check-custom"></span>
+                            <span class="check-texto">Otras herramientas</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="campo-grupo campo-completo">
+                    <label class="campo-label">Descripción completa del curso <span class="req">*</span></label>
+                    <textarea class="campo-textarea" rows="6" id="desc-curso"
+                        placeholder="Describí en detalle de qué trata el curso. Qué van a aprender los alumnos, cómo está estructurado, qué proyectos van a hacer..."
+                        maxlength="1200"></textarea>
+                    <div class="campo-footer">
+                        <span class="campo-hint">// Cuanto más detallado, mejor evaluamos la propuesta</span>
+                        <span class="char-count" id="desc-count">0 / 1200</span>
+                    </div>
+                </div>
+                <div class="campo-grupo campo-completo">
+                    <label class="campo-label">¿Qué hace único a este curso? <span class="req">*</span></label>
+                    <textarea class="campo-textarea" rows="4" id="unico-textarea"
+                        placeholder="Por qué este curso y no los miles que ya existen. Qué enfoque particular tenés. Qué lo diferencia."
+                        maxlength="600"></textarea>
+                    <div class="campo-footer">
+                        <span class="campo-hint">// Sé brutalmente honesto/a</span>
+                        <span class="char-count" id="unico-count">0 / 600</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-nav">
+                <span class="form-nav-info">// paso 2 de 5</span>
+                <div class="form-nav-btns">
+                    <button class="btn-nav" onclick="irA(1)">← Anterior</button>
+                    <button class="btn-nav btn-nav--primario" onclick="irA(3)">Continuar →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ SECCIÓN 3: MÓDULOS ═══ -->
+        <div class="form-seccion" id="sec-3">
+
+            <div class="seccion-header">
+                <div class="seccion-num">03</div>
+                <div class="seccion-titulo-wrap">
+                    <div class="seccion-tag">// estructura_de_clases.json</div>
+                    <h2 class="seccion-titulo">Estructura de módulos y clases</h2>
+                    <p class="seccion-desc">Detallá el contenido clase por clase. Podés agregar y eliminar filas. Un
+                        módulo = una clase o lección.</p>
+                </div>
+            </div>
+
+            <div class="campos-grilla campos-grilla--3" style="margin-bottom: 40px;">
+                <div class="campo-grupo">
+                    <label class="campo-label">Total de módulos</label>
+                    <div class="range-valor" id="rango-valor">1</div>
+                    <input type="range" class="campo-range" id="total-modulos-range" min="1" max="50" value="1"
+                        oninput="sincronizarContador()" />
+                    <div class="range-labels">
+                        <span>1 módulo</span>
+                        <span>50 módulos</span>
+                    </div>
+                </div>
+                <div class="campo-grupo">
+                    <label class="campo-label">Formato del contenido</label>
+                    <select class="campo-select">
+                        <option value="">Seleccioná...</option>
+                        <option>Video grabado</option>
+                        <option>Video en vivo (live)</option>
+                        <option>Texto + ejercicios</option>
+                        <option>Mix video + texto</option>
+                    </select>
+                </div>
+                <div class="campo-grupo">
+                    <label class="campo-label">Duración promedio por clase</label>
+                    <select class="campo-select">
+                        <option value="">Seleccioná...</option>
+                        <option>Menos de 10 min</option>
+                        <option>10–20 min</option>
+                        <option>20–45 min</option>
+                        <option>Más de 45 min</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-divisor"><span class="form-divisor-texto">// detalle clase por clase</span></div>
+
+            <!-- Header de la tabla -->
+            <div class="modulo-row-header">
+                <div class="modulo-header-cell">#</div>
+                <div class="modulo-header-cell">Título de la clase</div>
+                <div class="modulo-header-cell">Tipo</div>
+                <div class="modulo-header-cell">Duración</div>
+                <div class="modulo-header-cell"></div>
+            </div>
+
+            <!-- Filas dinámicas -->
+            <div class="modulos-container" id="modulos-container">
+                <!-- Se genera por JS -->
+            </div>
+
+            <button class="btn-add-modulo" onclick="addModulo()">Agregar clase</button>
+
+            <div class="form-divisor" style="margin-top:48px;"><span class="form-divisor-texto">// proyecto final</span>
+            </div>
+
+            <div class="campos-grilla">
+                <div class="campo-grupo campo-completo">
+                    <label class="campo-label">¿El curso incluye un proyecto final? <span class="req">*</span></label>
+                    <div class="radio-grupo">
+                        <label class="radio-opcion">
+                            <input type="radio" name="proyecto-final" value="si-deployable" />
+                            <span class="radio-custom"></span>
+                            <span class="radio-texto">Sí, con proyecto deployable (el alumno termina con algo real en
+                                producción)</span>
+                            <span class="radio-badge">deployable</span>
+                        </label>
+                        <label class="radio-opcion">
+                            <input type="radio" name="proyecto-final" value="si-ejercicio" />
+                            <span class="radio-custom"></span>
+                            <span class="radio-texto">Sí, con proyecto integrador (ejercicio final que integra todo el
+                                contenido)</span>
+                            <span class="radio-badge">integrador</span>
+                        </label>
+                        <label class="radio-opcion">
+                            <input type="radio" name="proyecto-final" value="no" />
+                            <span class="radio-custom"></span>
+                            <span class="radio-texto">No, el contenido es más teórico / conceptual</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="campo-grupo campo-completo">
+                    <label class="campo-label">Descripción del proyecto final</label>
+                    <textarea class="campo-textarea" rows="4"
+                        placeholder="¿Qué va a construir el alumno al final? ¿Qué tecnologías usa? ¿Qué problema resuelve?..."></textarea>
+                </div>
+            </div>
+
+            <div class="form-nav">
+                <span class="form-nav-info">// paso 3 de 5</span>
+                <div class="form-nav-btns">
+                    <button class="btn-nav" onclick="irA(2)">← Anterior</button>
+                    <button class="btn-nav btn-nav--primario" onclick="irA(4)">Continuar →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ SECCIÓN 4: MATERIAL ═══ -->
+        <div class="form-seccion" id="sec-4">
+
+            <div class="seccion-header">
+                <div class="seccion-num">04</div>
+                <div class="seccion-titulo-wrap">
+                    <div class="seccion-tag">// archivos_adjuntos.zip</div>
+                    <h2 class="seccion-titulo">Material y archivos</h2>
+                    <p class="seccion-desc">Subí cualquier material que respalde tu postulación. Pueden ser clases de
+                        muestra, slides, notebooks, demos, o lo que veas relevante.</p>
+                </div>
+            </div>
+
+            <div class="campos-grilla">
+                <div class="campo-grupo campo-completo">
+                    <label class="campo-label">Clase o lección de muestra</label>
+                    <div class="upload-area" id="upload-muestra">
+                        <input type="file" id="file-muestra" accept=".mp4,.mov,.pdf,.pptx,.ipynb,.zip"
+                            onchange="mostrarArchivos('file-muestra','lista-muestra')" multiple />
+                        <span class="upload-icono">[ ↑ ]</span>
+                        <div class="upload-texto-principal">Arrastrá archivos o hacé click</div>
+                        <div class="upload-texto-sub">// .mp4 · .mov · .pdf · .pptx · .ipynb · .zip · máx 500MB</div>
+                    </div>
+                    <div class="upload-lista" id="lista-muestra"></div>
+                    <span class="campo-hint">// Una clase grabada o un notebook que muestre tu forma de enseñar</span>
+                </div>
+
+                <div class="campo-grupo campo-completo">
+                    <label class="campo-label">Slides o material de apoyo</label>
+                    <div class="upload-area" id="upload-slides">
+                        <input type="file" id="file-slides" accept=".pdf,.pptx,.key,.ipynb"
+                            onchange="mostrarArchivos('file-slides','lista-slides')" multiple />
+                        <span class="upload-icono">[ ↑ ]</span>
+                        <div class="upload-texto-principal">Arrastrá archivos o hacé click</div>
+                        <div class="upload-texto-sub">// .pdf · .pptx · .key · .ipynb</div>
+                    </div>
+                    <div class="upload-lista" id="lista-slides"></div>
+                </div>
+
+                <div class="campo-grupo campo-completo">
+                    <label class="campo-label">Código / Notebooks de ejemplo</label>
+                    <div class="upload-area" id="upload-codigo">
+                        <input type="file" id="file-codigo" accept=".py,.ipynb,.zip,.txt"
+                            onchange="mostrarArchivos('file-codigo','lista-codigo')" multiple />
+                        <span class="upload-icono">[ ↑ ]</span>
+                        <div class="upload-texto-principal">Arrastrá archivos o hacé click</div>
+                        <div class="upload-texto-sub">// .py · .ipynb · .zip · .txt</div>
+                    </div>
+                    <div class="upload-lista" id="lista-codigo"></div>
+                    <span class="campo-hint">// Podés también linkar a un repo de GitHub en el paso anterior</span>
+                </div>
+            </div>
+
+            <div class="form-divisor"><span class="form-divisor-texto">// referencias y links</span></div>
+
+            <div class="campos-grilla campos-grilla--2">
+                <div class="campo-grupo">
+                    <label class="campo-label">Link a demo o proyecto existente</label>
+                    <input type="url" class="campo-input" placeholder="https://..." />
+                    <span class="campo-hint">// Un proyecto tuyo relacionado con el curso</span>
+                </div>
+                <div class="campo-grupo">
+                    <label class="campo-label">Link a clase o video de muestra online</label>
+                    <input type="url" class="campo-input" placeholder="https://youtube.com/..." />
+                    <span class="campo-hint">// YouTube, Loom, Drive, lo que tengas</span>
+                </div>
+                <div class="campo-grupo campo-completo">
+                    <label class="campo-label">Publicaciones, artículos o recursos relacionados</label>
+                    <textarea class="campo-textarea" rows="3"
+                        placeholder="Links a artículos, papers, blogs o cualquier recurso que respalde tu expertise en el tema..."></textarea>
+                </div>
+            </div>
+
+            <div class="form-nav">
+                <span class="form-nav-info">// paso 4 de 5</span>
+                <div class="form-nav-btns">
+                    <button class="btn-nav" onclick="irA(3)">← Anterior</button>
+                    <button class="btn-nav btn-nav--primario" onclick="irA(5)">Continuar →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ SECCIÓN 5: REVISIÓN ═══ -->
+        <div class="form-seccion" id="sec-5">
+
+            <div class="seccion-header">
+                <div class="seccion-num">05</div>
+                <div class="seccion-titulo-wrap">
+                    <div class="seccion-tag">// revision_final.exe</div>
+                    <h2 class="seccion-titulo">Revisión y confirmación</h2>
+                    <p class="seccion-desc">Antes de enviar, confirmá algunos detalles finales sobre cómo querés
+                        trabajar con HackHouse Academy.</p>
+                </div>
+            </div>
+
+            <div class="campos-grilla">
+                <div class="campo-grupo campo-completo">
+                    <label class="campo-label">¿Cuándo podrías tener el curso listo? <span class="req">*</span></label>
+                    <div class="radio-grupo">
+                        <label class="radio-opcion">
+                            <input type="radio" name="timeline" value="1m" />
+                            <span class="radio-custom"></span>
+                            <span class="radio-texto">En menos de 1 mes — Tengo buena parte del material</span>
+                            <span class="radio-badge">inmediato</span>
+                        </label>
+                        <label class="radio-opcion">
+                            <input type="radio" name="timeline" value="3m" />
+                            <span class="radio-custom"></span>
+                            <span class="radio-texto">En 1 a 3 meses</span>
+                        </label>
+                        <label class="radio-opcion">
+                            <input type="radio" name="timeline" value="6m" />
+                            <span class="radio-custom"></span>
+                            <span class="radio-texto">En 3 a 6 meses</span>
+                        </label>
+                        <label class="radio-opcion">
+                            <input type="radio" name="timeline" value="indefinido" />
+                            <span class="radio-custom"></span>
+                            <span class="radio-texto">Depende de los recursos y el apoyo disponible</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="campo-grupo campo-completo">
+                    <label class="campo-label">¿Qué esperás de HackHouse Academy? <span class="req">*</span></label>
+                    <div class="check-grid">
+                        <label class="check-opcion">
+                            <input type="checkbox" />
+                            <span class="check-custom"></span>
+                            <span class="check-texto">Apoyo en producción de video</span>
+                        </label>
+                        <label class="check-opcion">
+                            <input type="checkbox" />
+                            <span class="check-custom"></span>
+                            <span class="check-texto">Distribución y marketing</span>
+                        </label>
+                        <label class="check-opcion">
+                            <input type="checkbox" />
+                            <span class="check-custom"></span>
+                            <span class="check-texto">Plataforma técnica</span>
+                        </label>
+                        <label class="check-opcion">
+                            <input type="checkbox" />
+                            <span class="check-custom"></span>
+                            <span class="check-texto">Feedback y revisión de contenido</span>
+                        </label>
+                        <label class="check-opcion">
+                            <input type="checkbox" />
+                            <span class="check-custom"></span>
+                            <span class="check-texto">Gestión de alumnos</span>
+                        </label>
+                        <label class="check-opcion">
+                            <input type="checkbox" />
+                            <span class="check-custom"></span>
+                            <span class="check-texto">Comunidad y soporte</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="campo-grupo campo-completo">
+                    <label class="campo-label">Expectativa de compensación <span class="req">*</span></label>
+                    <div class="radio-grupo">
+                        <label class="radio-opcion">
+                            <input type="radio" name="compensacion" value="revenue-share" />
+                            <span class="radio-custom"></span>
+                            <span class="radio-texto">Revenue share — Un porcentaje de cada venta del curso</span>
+                            <span class="radio-badge">% ventas</span>
+                        </label>
+                        <label class="radio-opcion">
+                            <input type="radio" name="compensacion" value="pago-fijo" />
+                            <span class="radio-custom"></span>
+                            <span class="radio-texto">Pago fijo por creación del contenido</span>
+                            <span class="radio-badge">fee fijo</span>
+                        </label>
+                        <label class="radio-opcion">
+                            <input type="radio" name="compensacion" value="mix" />
+                            <span class="radio-custom"></span>
+                            <span class="radio-texto">Mix de ambas opciones — A definir</span>
+                            <span class="radio-badge">negociable</span>
+                        </label>
+                        <label class="radio-opcion">
+                            <input type="radio" name="compensacion" value="abierto" />
+                            <span class="radio-custom"></span>
+                            <span class="radio-texto">Abierto a discutirlo según la propuesta</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="campo-grupo campo-completo">
+                    <label class="campo-label">¿Algo más que quieras agregar?</label>
+                    <textarea class="campo-textarea" rows="4" id="extras-textarea"
+                        placeholder="Preguntas, condiciones, contexto adicional, links extra, lo que sea relevante..."
+                        maxlength="600"></textarea>
+                    <div class="campo-footer">
+                        <span class="campo-hint">// Opcional pero bienvenido</span>
+                        <span class="char-count" id="extras-count">0 / 600</span>
+                    </div>
+                </div>
+
+                <div class="campo-grupo campo-completo">
+                    <div class="radio-grupo">
+                        <label class="radio-opcion" style="padding: 18px;">
+                            <input type="checkbox" id="acepto-terminos" />
+                            <span class="check-custom"></span>
+                            <span class="radio-texto" style="font-size: 0.78rem; margin-left: 4px;">
+                                Entiendo que HackHouse Academy revisará esta postulación y se comunicará por email. La
+                                información provista es verídica.
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-nav">
+                <span class="form-nav-info">// paso 5 de 5 · último paso</span>
+                <div class="form-nav-btns">
+                    <button class="btn-nav" onclick="irA(4)">← Anterior</button>
+                    <button class="btn-nav btn-nav--submit" onclick="enviarFormulario()">Enviar postulación →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ PANTALLA DE ÉXITO ═══ -->
+        <div class="exito-screen" id="exito-screen">
+            <div class="exito-codigo">// postulacion_enviada · status: 200 OK</div>
+            <h2 class="exito-titulo">Postulación<br>recibida</h2>
+            <p class="exito-desc">
+                Tu postulación fue enviada. La revisamos en los próximos días hábiles.
+                Si tu propuesta encaja con lo que estamos construyendo, te contactamos por mail.
+            </p>
+            <div class="exito-id" id="exito-id">// ID: —</div>
+            <br>
+            <a href="index.html" class="exito-volver">Volver al inicio</a>
+        </div>
+
+    </main>
+
+    <footer>
+        <span>© 2026 HackHouse Academy — Todos los derechos reservados</span>
+        <span>Sistema v1.0.0 // Online</span>
+        <span>academia@hackhouse.dev</span>
+    </footer>
+
+    <script src="public/js/postulaciones.js"></script>
+</body>
+
+</html>
